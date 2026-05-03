@@ -1,6 +1,6 @@
-# Fullstack FastAPI Template :zap:
+# Pebble Call 🪨
 
-A full-stack template in FastAPI with Preact+Vite client frontend.
+_A low-friction mental health managing and tracking system. Making psychiatric care more accessible._
 
 ## Initial setup
 
