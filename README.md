@@ -39,6 +39,7 @@ cp ./Caddyfile.example ./Caddyfile
 
 ```bash
 cd backend
+cp .env.example .env
 ```
 
 Inside the `backend` directory
