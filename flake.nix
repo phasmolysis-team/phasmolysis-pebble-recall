@@ -49,13 +49,8 @@
               self.formatter.${system}
             ];
 
-            env = {
-            };
-
             shellHook = ''
               unset PYTHONPATH
-              uv sync
-              . .venv/bin/activate
             '';
 
           };
