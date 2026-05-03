@@ -1,0 +1,13 @@
+{$PROXY_URL} {
+	tls internal
+	reverse_proxy /api* {
+		to {$BACKEND_API}
+	}
+	reverse_proxy /apidocs* {
+		to {$BACKEND_API}
+	}
+
+	reverse_proxy /* {
+		to {$FRONTEND_CLIENT}
+	}
+}
