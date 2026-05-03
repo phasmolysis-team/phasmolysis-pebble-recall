@@ -29,6 +29,12 @@ sudo apt install -y postgresql uv nodejs just caddy
 
 ### Setup
 
+Copy `Caddyfile.example`
+
+```bash
+cp ./Caddyfile.example ./Caddyfile
+```
+
 #### Backend
 
 ```bash
