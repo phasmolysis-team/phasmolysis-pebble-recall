@@ -18,13 +18,13 @@ direnv allow
 **Fedora**
 
 ```bash
-sudo dnf install -y postgresql postgresql-server postgresql-contrib uv nodejs just
+sudo dnf install -y postgresql postgresql-server postgresql-contrib uv nodejs just caddy
 ```
 
 **Ubuntu/Debian**
 
 ```bash
-sudo apt install -y postgresql uv nodejs just
+sudo apt install -y postgresql uv nodejs just caddy
 ```
 
 ### Setup
