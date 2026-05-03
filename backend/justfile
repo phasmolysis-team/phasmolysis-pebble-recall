@@ -31,6 +31,7 @@ alembic +args:
 
 start-db:
     if [ ! -f "${PGDATA}/PG_VERSION" ]; then initdb -D "${PGDATA}" -U ${PG__USER}; fi
+    sed -i -E "s/#unix_socket_directories = '\/var\/run\/postgresql, \/tmp' # comma-separated list of directories/unix_socket_directories = '\/tmp' # comma-separated list of directories/" "${PGDATA}/postgresql.conf"
     pg_ctl -o "${INIT_DB_OPTIONS}" -D "${PGDATA}" start
 
 stop-db:
