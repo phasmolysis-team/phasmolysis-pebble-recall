@@ -61,3 +61,17 @@ create-test-db:
 drop-test-db:
     psql -h ${PG__HOST} -p ${PG__PORT} -U ${PG__USER} \
         -c "DROP DATABASE IF EXISTS ${TEST_DBNAME};"
+
+[private]
+nio:
+    @ echo uv run no_implicit_optional --use-union-or app; exit 0
+
+[private]
+ruff:
+    @ python -m ruff check app --fix; exit 0
+
+# Lint codebase
+lint:
+    just nio
+    python -m black -q app
+    just ruff
