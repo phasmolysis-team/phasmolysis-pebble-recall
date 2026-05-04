@@ -10,13 +10,13 @@ class BaseUsers(SQLModel, table=False):
     username: str | None
     email: EmailStr
     contact_number: str
+    professional_license_id: str | None
     password: str
 
 
 class Users(BaseUsers, table=True):
     id: Annotated[int | None, Field(primary_key=True, default=None)]
-    kind: Annotated[List[Literal['patient', 'professional']], Field(sa_column=Column(sa.TEXT))]
-    professional_license_id: Annotated[str, Field(sa_column=Column(sa.TEXT, nullable=True))]
+    kind: Annotated[List[Literal['patient', 'professional']], Field(sa_column=Column(sa.ARRAY(sa.TEXT)))]
     created_at: Annotated[
         datetime.datetime,
         Field(sa_column=Column(sa.TIMESTAMP(timezone=True), nullable=True)),
