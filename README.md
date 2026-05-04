@@ -2,6 +2,10 @@
 
 _A low-friction mental health managing and tracking system. Making psychiatric care more accessible._
 
+> [!NOTE]
+> Project used the following project template <https://codeberg.org/uncomfyhalomacro/fullstack-fastapi-template/>
+> licensed under [WTFPL](https://www.wtfpl.net/).
+
 ## Initial setup
 
 Requires [direnv](https://direnv.net/) and [nix](https://nixos.org).
