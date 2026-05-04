@@ -160,15 +160,17 @@ async def register_new_user(
         user.role = ["patient"]
     user.password = key
     user.disabled = False
+    if user.username == "":
+        user.username = None
+    if user.professional_license_id == "":
+        user.professional_license_id = None
     session.add(user)
     await session.commit()
     await session.refresh(user)
     response = UserWithoutPassword(
-        username=user.username if user.username else None,
+        username=user.username,
         email=user.email,
         contact_number=user.contact_number,
-        professional_license_id=user.professional_license_id
-        if user.professional_license_id
-        else None,
+        professional_license_id=user.professional_license_id,
     )
     return response
