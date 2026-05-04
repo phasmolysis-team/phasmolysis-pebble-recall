@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, Request
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse
 from tempfile import NamedTemporaryFile
 import typst
 
