@@ -5,14 +5,15 @@ import base64
 from cryptography.fernet import Fernet
 from app.core.config import settings
 
+
 class CookieConfig(BaseModel):
-    key: Annotated[str | None, Field()]= None
+    key: Annotated[str | None, Field()] = None
     value: Annotated[str | None, Field()] = None
     expires: Annotated[datetime.datetime | None, Field()] = None
-    path: Annotated[str, Field()] = '/'
-    samesite: Annotated[Literal['none', 'lax', 'strict'], Field()] = 'lax'
-    secure: Annotated[bool, Field()]=True
-    httponly: Annotated[bool, Field()]=True
+    path: Annotated[str, Field()] = "/"
+    samesite: Annotated[Literal["none", "lax", "strict"], Field()] = "lax"
+    secure: Annotated[bool, Field()] = True
+    httponly: Annotated[bool, Field()] = True
 
 
 def set_default_cookie_params(
@@ -46,5 +47,3 @@ def decode_encrypted_cookie(token: str) -> str:
     dtoken = base64.urlsafe_b64decode(btoken)
 
     return f.decrypt(dtoken).decode(encoding="utf-8")
-
-
