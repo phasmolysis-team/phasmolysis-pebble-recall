@@ -4,7 +4,6 @@ from jwt.types import Options
 from typing import Callable
 import datetime
 import jwt
-import os
 
 from pydantic import BaseModel
 
