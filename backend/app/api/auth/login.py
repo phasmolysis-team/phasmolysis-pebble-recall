@@ -70,7 +70,7 @@ async def login_user(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong"
         )
     issued_at = int(datetime.datetime.now(datetime.UTC).timestamp())
-    expires_at = int(datetime.datetime.now(datetime.UTC).timestamp()) + (60 * 60 * 24)
+    expires_at = issued_at + (60 * 60 * 24)
     claims = Claims(exp=expires_at, sub=user.email, iat=issued_at)
     token = jwt_service.sign(claims=claims)
     cookie_params = set_default_cookie_params_with_encryption(
