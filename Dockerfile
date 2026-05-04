@@ -14,7 +14,13 @@ FROM python:3.13-alpine
 
 RUN apk add --no-cache \
     curl \
-    just
+    just \
+    typst \
+    cargo \
+    rust \
+    openssl-dev \
+    perl \
+    make
 
 # Install uv
 RUN pip install --no-cache-dir uv

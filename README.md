@@ -13,6 +13,20 @@ cat $PROJECT_PATH/.direnv.uv >> ~/.config/direnv/direnvrc
 direnv allow
 ```
 
+## Docker
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Adjust variables accordingly
+
+```bash
+docker compose --env-file=backend/.env up --build
+```
+
+That's it
+
 ## For Non Nix Setups
 
 **Fedora**

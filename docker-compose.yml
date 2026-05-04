@@ -3,9 +3,6 @@ services:
     image: postgres:16-alpine
     container_name: pebble-recall-postgres
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: true
     environment:
       POSTGRES_USER: ${PG__USER:-postgres}
       POSTGRES_DB: ${PG__DBNAME:-pebble}
@@ -21,29 +18,45 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
+  migrations:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: pebble-recall-app
-    restart: unless-stopped
-    env_file:
-      - path: .env
-        required: true
-    depends_on:
-      postgres:
-        condition: service_healthy
+    container_name: pebble-recall-migrations
     environment:
       PG__HOST: postgres
       PG__PORT: 5432
       PG__USER: ${PG__USER:-postgres}
       PG__DBNAME: ${PG__DBNAME:-pebble}
       PG__PASSWORD: ${PG__PASSWORD}
-      PG_URL: "postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}"
+      PG_URL: postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
+    command: uv run alembic upgrade head
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pebble-recall-app
+    restart: unless-stopped
+    environment:
+      PG__HOST: postgres
+      PG__PORT: 5432
+      PG__USER: ${PG__USER:-postgres}
+      PG__DBNAME: ${PG__DBNAME:-pebble}
+      PG__PASSWORD: ${PG__PASSWORD}
+      PG_URL: postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
       HOST: 0.0.0.0
       PORT: 8080
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
 
 volumes:
   postgres_data:
