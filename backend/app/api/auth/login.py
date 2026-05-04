@@ -33,7 +33,7 @@ router = APIRouter()
 class LoginData(BaseModel):
     username: str
     password: str
-    role: Literal['professional', 'patient']
+    role: Literal["professional", "patient"]
 
 
 @router.post(path="/login", response_model=str, status_code=HTTP_200_OK)
@@ -120,7 +120,9 @@ async def logout_user(
 
 
 @router.post(
-    "/register", response_model=UserWithoutPassword, status_code=HTTP_201_CREATED,
+    "/register",
+    response_model=UserWithoutPassword,
+    status_code=HTTP_201_CREATED,
 )
 async def register_new_user(
     request: Request,
@@ -133,9 +135,13 @@ async def register_new_user(
         raise HTTPException(
             status_code=HTTP_406_NOT_ACCEPTABLE, detail="You must logout first."
         )
-    statement = select(Users).where(
-        or_(Users.username == payload.username, Users.email == payload.email)
-    )
+
+    if payload.username:
+        statement = select(Users).where(
+            or_(Users.username == payload.username, Users.email == payload.email)
+        )
+    else:
+        statement = select(Users).where(Users.email == payload.email)
     results = await session.exec(statement)
     has_first = results.first()
     if has_first:
@@ -148,12 +154,21 @@ async def register_new_user(
     updated_at = created_at
     user = Users(created_at=created_at, updated_at=updated_at, **payload.model_dump())
     key = kdf.derive_phc_encoded(payload.password.encode())
+    if payload.professional_license_id:
+        user.role = ["professional"]
+    else:
+        user.role = ["patient"]
     user.password = key
     user.disabled = False
     session.add(user)
     await session.commit()
     await session.refresh(user)
     response = UserWithoutPassword(
-        username=user.username, email=user.email, contact_number=user.contact_number
+        username=user.username if user.username else None,
+        email=user.email,
+        contact_number=user.contact_number,
+        professional_license_id=user.professional_license_id
+        if user.professional_license_id
+        else None,
     )
     return response

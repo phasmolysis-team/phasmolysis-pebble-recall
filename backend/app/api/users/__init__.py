@@ -108,6 +108,8 @@ async def update_user(
         to_delete_login = True
     if payload.contact_number is not None:
         user.contact_number = payload.contact_number
+    if payload.professional_license_id is not None:
+        user.professional_license_id = payload.professional_license_id
     if payload.password is not None:
         user.password = kdf.derive_phc_encoded(payload.password.encode())
 
