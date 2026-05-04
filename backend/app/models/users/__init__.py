@@ -7,15 +7,15 @@ from pydantic import EmailStr, BaseModel
 
 
 class BaseUsers(SQLModel, table=False):
-    username: str | None
+    username: str | None = None
     email: EmailStr
     contact_number: str
-    professional_license_id: str | None
+    professional_license_id: str | None = None
     password: str
 
 
 class Users(BaseUsers, table=True):
-    id: Annotated[int | None, Field(primary_key=True, default=None)]
+    id: Annotated[int | None, Field(primary_key=True)] = None
     role: Annotated[List[Literal['patient', 'professional']], Field(sa_column=Column(sa.ARRAY(sa.TEXT)))]
     created_at: Annotated[
         datetime.datetime,
@@ -29,7 +29,7 @@ class Users(BaseUsers, table=True):
 
 
 class UserWithoutPassword(BaseModel):
-    username: str | None
+    username: str | None = None
     email: EmailStr
     contact_number: str
 

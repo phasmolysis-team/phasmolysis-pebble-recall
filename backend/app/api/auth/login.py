@@ -120,7 +120,7 @@ async def logout_user(
 
 
 @router.post(
-    "/register", response_model=UserWithoutPassword, status_code=HTTP_201_CREATED
+    "/register", response_model=UserWithoutPassword, status_code=HTTP_201_CREATED,
 )
 async def register_new_user(
     request: Request,
