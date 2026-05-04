@@ -10,8 +10,13 @@ class AuthConfig(BaseModel):
 
 class Settings(BaseSettings):
     AUTH: Annotated[AuthConfig, Field()] = AuthConfig()
+<<<<<<< feature/emotion-mapping
     PG_URL: Annotated[str, Field()] = ""
     DOMAINS: Annotated[set[str], Field()] = set()
+=======
+    PG_URL: Annotated[str, Field()] = "" 
+    ORIGINS: Annotated[set[str], Field()] = set()
+>>>>>>> main
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"

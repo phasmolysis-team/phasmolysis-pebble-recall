@@ -1,5 +1,5 @@
 from app.core.config import settings
-from dateutil.tz import UTC
+from datetime import UTC
 from jwt.types import Options
 from typing import Callable
 import datetime
