@@ -1,4 +1,4 @@
-# Pebble Call 🪨
+# Pebble ReCall 🪨
 
 _A low-friction mental health managing and tracking system. Making psychiatric care more accessible._
 
