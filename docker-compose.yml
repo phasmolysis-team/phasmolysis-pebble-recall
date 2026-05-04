@@ -29,6 +29,8 @@ services:
       PG__USER: ${PG__USER:-postgres}
       PG__DBNAME: ${PG__DBNAME:-pebble}
       PG__PASSWORD: ${PG__PASSWORD}
+      AUTH__COOKIE_SECRET: ${AUTH__COOKIE_SECRET}
+      AUTH__JWT_SECRET: ${AUTH__JWT_SECRET}
       PG_URL: postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
     command: uv run alembic upgrade head
     depends_on:
@@ -47,6 +49,8 @@ services:
       PG__USER: ${PG__USER:-postgres}
       PG__DBNAME: ${PG__DBNAME:-pebble}
       PG__PASSWORD: ${PG__PASSWORD}
+      AUTH__COOKIE_SECRET: ${AUTH__COOKIE_SECRET}
+      AUTH__JWT_SECRET: ${AUTH__JWT_SECRET}
       PG_URL: postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
       HOST: 0.0.0.0
       PORT: 8080
