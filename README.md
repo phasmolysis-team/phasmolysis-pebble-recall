@@ -25,6 +25,23 @@ Adjust variables accordingly
 docker compose --env-file=backend/.env up --build
 ```
 
+### Environment variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `HOST` | Server host | `localhost` |
+| `PORT` | Server port | `8080` |
+| `PG_URL` | Full database connection string | |
+| `ORIGINS` | CORS allowed origins (comma-separated) | |
+| `API_ROOT` | Base path for API routes | `/api` |
+| `AUTH__JWT_SECRET` | Fernet key for JWT signing | |
+| `AUTH__COOKIE_SECRET` | Fernet key for cookie encryption | |
+
+Generate Fernet keys with:
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
 That's it
 
 ## For Non Nix Setups
