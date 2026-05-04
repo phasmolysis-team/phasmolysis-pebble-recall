@@ -1,5 +1,5 @@
 from app.core.config import settings
-from .api import auth, users
+from .api import auth, users, texport
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
@@ -15,3 +15,4 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, tags=["users"])
+app.include_router(texport.router, tags=["docs"])
