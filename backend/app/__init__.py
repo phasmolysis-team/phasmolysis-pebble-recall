@@ -1,15 +1,10 @@
 from app.core.config import settings
-<<<<<<< feature/emotion-mapping
 
-app = FastAPI(root_path=settings.API_ROOT)
-=======
 from .api import auth, users, texport
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
-app = FastAPI(root_path="/api")
->>>>>>> main
-
+app = FastAPI(root_path=settings.API_ROOT)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(settings.ORIGINS),
