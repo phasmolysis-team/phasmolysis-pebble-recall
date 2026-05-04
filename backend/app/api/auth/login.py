@@ -22,7 +22,7 @@ from app.schemas.cookies import (
     decode_encrypted_cookie,
 )
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import Annotated
+from typing import Annotated, Literal
 from fastapi import APIRouter, Form, Depends, HTTPException, Response, Request
 from pydantic import BaseModel
 from sqlmodel import select, or_
@@ -33,6 +33,7 @@ router = APIRouter()
 class LoginData(BaseModel):
     username: str
     password: str
+    role: Literal['professional', 'patient']
 
 
 @router.post(path="/login", response_model=str, status_code=HTTP_200_OK)

@@ -16,7 +16,7 @@ class BaseUsers(SQLModel, table=False):
 
 class Users(BaseUsers, table=True):
     id: Annotated[int | None, Field(primary_key=True, default=None)]
-    kind: Annotated[List[Literal['patient', 'professional']], Field(sa_column=Column(sa.ARRAY(sa.TEXT)))]
+    role: Annotated[List[Literal['patient', 'professional']], Field(sa_column=Column(sa.ARRAY(sa.TEXT)))]
     created_at: Annotated[
         datetime.datetime,
         Field(sa_column=Column(sa.TIMESTAMP(timezone=True), nullable=True)),
