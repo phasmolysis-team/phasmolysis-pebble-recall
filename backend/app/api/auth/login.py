@@ -1,3 +1,4 @@
+from app.middlewares.auth import check_if_logged_in, get_session_cookie
 from app.core.security.jwt_service import JwtService, Claims, get_jwt_service
 from sqlalchemy.exc import NoResultFound
 from datetime import UTC
@@ -44,12 +45,13 @@ async def login_user(
     jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
     kdf: Annotated[Argon2id, Depends(get_kdf)],
     data: Annotated[LoginData, Form()],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)]
 ):
-    session_cookie = request.cookies.get("session")
-    if session_cookie is not None:
+    if not is_logged_in:
         raise HTTPException(
             status_code=HTTP_406_NOT_ACCEPTABLE, detail="You must logout first."
         )
+
     statement = select(Users).where(
         or_(Users.username == data.username, Users.email == data.username)
     )
@@ -85,11 +87,12 @@ async def login_user(
 
 @router.get(path="/decrypt_cookie")
 async def decrypt_cookie(
-    jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
     request: Request,
+    jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    session_cookie: Annotated[str, Depends(get_session_cookie)],
 ):
-    session_cookie = request.cookies.get("session")
-    if session_cookie is None:
+    if not is_logged_in:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
 
     jwt_token = decode_encrypted_cookie(session_cookie)
@@ -101,9 +104,10 @@ async def logout_user(
     request: Request,
     response: Response,
     jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    session_cookie: Annotated[str, Depends(get_session_cookie)],
 ):
-    session_cookie = request.cookies.get("session")
-    if session_cookie is None:
+    if not is_logged_in:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
 
     jwt_token = decode_encrypted_cookie(session_cookie)
@@ -129,9 +133,9 @@ async def register_new_user(
     session: Annotated[AsyncSession, Depends(get_session)],
     kdf: Annotated[Argon2id, Depends(get_kdf)],
     payload: Annotated[BaseUsers, Form()],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)]
 ):
-    session_cookie = request.cookies.get("session")
-    if session_cookie is not None:
+    if not is_logged_in:
         raise HTTPException(
             status_code=HTTP_406_NOT_ACCEPTABLE, detail="You must logout first."
         )
