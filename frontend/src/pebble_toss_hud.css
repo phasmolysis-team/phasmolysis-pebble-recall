@@ -1,0 +1,13 @@
+body {
+    padding:0;
+    margin: 0;
+}
+#valenceText{
+    font-size: 45px;
+    text-align: center;
+    margin:20px;
+    font-weight: bold;
+    @media (max-width: 760px) {
+        font-size: 30px;
+    }
+  }
