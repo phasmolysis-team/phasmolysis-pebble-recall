@@ -10,7 +10,8 @@ from fastapi import Request, Depends, HTTPException
 async def check_encrypted_cookie_auth(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
-    jwt_service: Annotated[JwtService, Depends(get_jwt_service)],    session_cookie: Annotated[str, Depends(get_session_cookie)],
+    jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
+    session_cookie: Annotated[str, Depends(get_session_cookie)],
 ):
     if session_cookie is None:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
@@ -34,4 +35,3 @@ def check_if_logged_in(
     request: Request,
 ):
     return request.cookies.get("session") is not None
-

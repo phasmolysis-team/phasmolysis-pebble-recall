@@ -45,7 +45,7 @@ async def login_user(
     jwt_service: Annotated[JwtService, Depends(get_jwt_service)],
     kdf: Annotated[Argon2id, Depends(get_kdf)],
     data: Annotated[LoginData, Form()],
-    is_logged_in: Annotated[bool, Depends(check_if_logged_in)]
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
 ):
     if not is_logged_in:
         raise HTTPException(
@@ -133,7 +133,7 @@ async def register_new_user(
     session: Annotated[AsyncSession, Depends(get_session)],
     kdf: Annotated[Argon2id, Depends(get_kdf)],
     payload: Annotated[BaseUsers, Form()],
-    is_logged_in: Annotated[bool, Depends(check_if_logged_in)]
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
 ):
     if not is_logged_in:
         raise HTTPException(

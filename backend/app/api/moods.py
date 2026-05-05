@@ -10,7 +10,8 @@ from starlette.status import (
     HTTP_200_OK,
     HTTP_409_CONFLICT,
     HTTP_201_CREATED,
-    HTTP_406_NOT_ACCEPTABLE, HTTP_404_NOT_FOUND,
+    HTTP_406_NOT_ACCEPTABLE,
+    HTTP_404_NOT_FOUND,
 )
 from cryptography.exceptions import InvalidKey
 from app.core.security.kdf_pass import get_kdf
@@ -31,6 +32,7 @@ from sqlmodel import select, or_, desc
 
 router = APIRouter()
 
+
 @router.get(path="/moods")
 async def get_mood_logs(
     request: Request,
@@ -50,6 +52,7 @@ async def get_mood_logs(
     logs = results.fetchall()
     return logs
 
+
 @router.get(path="/moods/latest")
 async def get_mood_logs_latest(
     request: Request,
@@ -64,7 +67,9 @@ async def get_mood_logs_latest(
     user = results.one_or_none()
     if user is None:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    statement = select(MoodLogs).where(MoodLogs.user_id == user.id).order_by(desc(MoodLogs.id))
+    statement = (
+        select(MoodLogs).where(MoodLogs.user_id == user.id).order_by(desc(MoodLogs.id))
+    )
     results = await session.exec(statement)
     logs = results.first()
     return logs

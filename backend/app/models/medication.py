@@ -3,6 +3,7 @@ from pydantic import Field, BaseModel
 import sqlalchemy as sa
 from typing import Annotated, Literal
 
+
 class Dosage:
     amount: float
     unit: Literal[
@@ -32,7 +33,6 @@ class Dosage:
 
 
 class Frequency:
-
     # for "every X days/weeks"
     every: int | None = None  # every 1 day, every 7 days
     unit: Literal[
@@ -70,5 +70,7 @@ class Medication(BaseModel):
 class MedicationLog(BaseModel):
     id: str
     medication: Medication
-    time_taken: Annotated[datetime.datetime | None, Field(sa.TIMESTAMP(timezone=True))]  # None if not taken
+    time_taken: Annotated[
+        datetime.datetime | None, Field(sa.TIMESTAMP(timezone=True))
+    ]  # None if not taken
     taken: bool  # derived from time_taken but explicit is better than implicit
