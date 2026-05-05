@@ -33,7 +33,8 @@ def upgrade() -> None:
         ),
         sa.Column(
             "updated_at", sa.TIMESTAMP(timezone=True), nullable=False, default=now()
-        ),        sa.Column("disabled", sa.Boolean, nullable=False, default=False),
+        ),
+        sa.Column("disabled", sa.Boolean, nullable=False, default=False),
         sa.Column("username", sa.Text, nullable=True),
         sa.Column("email", sa.Text, nullable=False, unique=True),
         sa.Column("contact_number", sa.Text, nullable=False, unique=True),
@@ -47,4 +48,3 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_table("users", if_exists=True)
-
