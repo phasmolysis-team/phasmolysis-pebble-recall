@@ -1,3 +1,4 @@
+import uuid
 from datetime import UTC
 from uuid import uuid7, UUID
 from typing import Annotated
@@ -10,11 +11,11 @@ import sqlalchemy as sa
 class MedicationLogs(SQLModel, table=True):
     __tablename__ = "medication_logs"
     id: Annotated[
-        UUID,
+        str,
         Field(
             primary_key=True,
         ),
-    ] = uuid7()
+    ]
     user_id: Annotated[
         int,
         Field(sa_column=sa.Column(sa.Integer)),
@@ -25,8 +26,9 @@ class MedicationLogs(SQLModel, table=True):
 
 
 class MedicationLogsWithTimestamp(MedicationLogs, table=False):
-    timestamp: Annotated[str, Field()]
+    timestamp: Annotated[datetime.datetime, Field()]
 
     def __init__(self, **args):
         super().__init__(**args)
-        self.timestamp = str(self.id.time/ 1000)
+        uid = uuid.UUID(self.id, version=7)
+        self.timestamp = datetime.datetime.fromtimestamp(uid.time/ 1000)
