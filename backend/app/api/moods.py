@@ -12,10 +12,11 @@ from app.models.users import Users
 from app.core.database import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Request 
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import select, desc
 
 router = APIRouter()
+
 
 class MoodLogsParams(BaseModel):
     valence: float
@@ -94,4 +95,3 @@ async def add_mood_logs(
     await session.refresh(mood_log)
 
     return MoodLogsWithTimestamp(**mood_log.model_dump())
-
