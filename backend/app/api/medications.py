@@ -1,8 +1,9 @@
+import uuid
 from app.models.medication import TMedication, FreqUnit, DosageUnit
 import datetime
 from app.models.medication_logs import MedicationLogs, MedicationLogsWithTimestamp
 from uuid import uuid7, UUID
-from pydantic import BaseModel, Json, UUID7
+from pydantic import BaseModel, UUID7
 from app.models.moods import MoodLogs, MoodLogsWithTimestamp
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
 from app.core.security.jwt_service import Claims
@@ -25,6 +26,7 @@ router = APIRouter()
 class MedicationLogsParams(BaseModel):
     medication: UUID7 | str
     side_effects: str
+    custom_date: datetime.datetime | None
 
 
 class TMedicationParams(BaseModel):
@@ -51,7 +53,7 @@ async def get_medication_logs(
     user = results.one_or_none()
     if user is None:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    statement = select(MedicationLogs).where(MedicationLogs.user_id == user.id)
+    statement = select(MedicationLogs).where(MedicationLogs.user_id == user.id).order_by(desc(MedicationLogs.id))
     results = await session.exec(statement)
     logs = results.all()
     if logs:
@@ -138,6 +140,14 @@ async def add_medication_logs(
     if user.id is None:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
 
+    if payload.custom_date is not None:
+        ts = int(payload.custom_date.timestamp() * 1000)
+        id = uuid.uuid8(a=ts)
+        c_ = str(id)
+        id = uuid.UUID(c_, version=7)
+    else:
+        id = uuid7()
+
     if isinstance(payload.medication, UUID):
         statement = select(TMedication).where(TMedication.id == payload.medication)
         results = await session.exec(statement)
@@ -148,7 +158,7 @@ async def add_medication_logs(
                 detail="no such medication found based on id",
             )
         log = MedicationLogs(
-            id=uuid7(),
+            id=id,
             user_id=user.id,
             medication_id=tmedication.id,
             medication_name=tmedication.name,
@@ -159,7 +169,7 @@ async def add_medication_logs(
         await session.refresh(log)
         return log
     log = MedicationLogs(
-        id=uuid7(),
+        id=id,
         user_id=user.id,
         medication_id=None,
         medication_name=payload.medication,
