@@ -1,4 +1,4 @@
-from app.models.moods import MoodLogs
+from app.models.moods import MoodLogs, MoodLogsWithTimestamp
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
 from app.core.security.jwt_service import JwtService, Claims, get_jwt_service
 from sqlalchemy.exc import NoResultFound
@@ -72,4 +72,7 @@ async def get_mood_logs_latest(
     )
     results = await session.exec(statement)
     logs = results.first()
+    if logs:
+        ret = MoodLogsWithTimestamp(**logs.model_dump())
+        return ret
     return logs
