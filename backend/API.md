@@ -49,7 +49,7 @@ These endpoints handle complex logging involving multiple medications and observ
 
 *   **POST `/side-effects/new`**: Add a matrix log entry.
     *   **Body**: `medications` (array of strings), `side_effects` (string), `custom_date`.
-*   **POST `/side-effects/retreive`**: Retrieve filtered matrix logs based on medication criteria.
+*   **POST `/side-effects/retrieve`**: Retrieve filtered matrix logs based on medication criteria.
 
 ---
 
