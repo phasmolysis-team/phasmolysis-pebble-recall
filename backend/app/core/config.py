@@ -1,7 +1,13 @@
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, BeforeValidator
 from typing import Annotated
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+def split_csv(v) -> set[str]:
+    if isinstance(v, str):
+        return set([i.strip() for i in v.split(",")])
+    if isinstance(v, set):
+        return v
+    raise ValueError("field is not of type set or str")
 
 class AuthConfig(BaseModel):
     JWT_SECRET: Annotated[str, Field()] = ""
@@ -11,7 +17,7 @@ class AuthConfig(BaseModel):
 class Settings(BaseSettings):
     AUTH: Annotated[AuthConfig, Field()] = AuthConfig()
     PG_URL: Annotated[str, Field()] = ""
-    ORIGINS: Annotated[set[str], Field()] = set()
+    ORIGINS: Annotated[set[str], BeforeValidator(split_csv)] = set()
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"
