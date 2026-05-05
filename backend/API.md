@@ -1,172 +1,84 @@
 # API Documentation
 
-## Base URL
-```
-
-/api
-
-```
-
-## Authentication Endpoints
-
-### POST /auth/login
-**Summary:** Login User  
-
-**Request Body (application/x-www-form-urlencoded):**
-- username (string, required)
-- password (string, required)
-- role (string, required) — enum: `professional | patient`
-
-**Responses:**
-- 200: Returns a string (likely token/session info)
-- 422: Validation error
+**Base URL:** `/api`  
+**Version:** `0.1.0`
+**Reference**: [openapi.json](./openapi.json)
 
 ---
 
-### GET /auth/decrypt_cookie
-**Summary:** Decrypt Cookie  
+## 🔐 Authentication
+Handle user sessions and identity verification.
 
-**Responses:**
-- 200: Returns decrypted cookie data
-
----
-
-### GET /auth/logout
-**Summary:** Logout User  
-
-**Responses:**
-- 200: Successfully logs out the user
+| Method | Endpoint | Summary | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | Register New User | Creates a new account using `email`, `password`, and `contact_number`. |
+| `POST` | `/auth/login` | Login User | Authenticates user via form-data. Requires `username`, `password`, and `role`. |
+| `GET` | `/auth/decrypt_cookie` | Decrypt Cookie | Retrieves and decrypts the current session cookie. |
+| `GET` | `/auth/logout` | Logout User | Ends the current user session. |
 
 ---
 
-### POST /auth/register
-**Summary:** Register New User  
+## 👤 User Management
+Manage profile details and account status.
 
-**Request Body (application/x-www-form-urlencoded):**
-- username (string, optional)
-- email (string, required)
-- contact_number (string, required)
-- professional_license_id (string, optional)
-- password (string, required)
-
-**Responses:**
-- 201: Returns user object (without password)
-- 422: Validation error
+| Method | Endpoint | Summary | Notes |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/users` | Get Current User | Returns the profile of the currently authenticated user. |
+| `PATCH` | `/users/{id}` | Update User | Updates user fields. **Note**: Email/Username changes trigger logout. |
+| `DELETE` | `/users/{id}` | Delete User | Permanently removes the user record by ID. |
 
 ---
 
-## User Endpoints
+## 🧠 Mood Tracking
+Endpoints for logging and retrieving emotional state data.
 
-### GET /users
-**Summary:** Get Current User  
-
-**Responses:**
-- 200: Returns:
-  - User object OR
-  - null (if not authenticated)
+*   **GET `/moods`**: Retrieve all mood logs.
+*   **POST `/moods`**: Add a new mood log entry.
+    *   **Payload**: `valence` (number), `arousal` (number).
+*   **GET `/moods/latest`**: Fetch the most recent mood entry.
 
 ---
 
-### DELETE /users/{id}
-**Summary:** Delete User  
+## 💊 Medications
+Manage medication lists and daily adherence logs.
 
-**Path Parameters:**
-- id (integer, required)
+### Medication List
+*   **GET `/medications`**: List all saved medications.
+*   **POST `/medications`**: Add a new medication.
+    *   **Units**: Supports `mg`, `g`, `ml`, `tablet`, `capsule`, `puff`, etc.
+    *   **Frequency**: Supports `hourly`, `daily`, `before_meal`, `as_needed`, etc.
 
-**Responses:**
-- 200: Returns deleted user (without password)
-- 422: Validation error
-
----
-
-### PATCH /users/{id}
-**Summary:** Update User  
-
-**Path Parameters:**
-- id (integer, required)
-
-**Request Body (application/x-www-form-urlencoded):**
-- username (string, optional)
-- email (string, optional)
-- contact_number (string, optional)
-- password (string, optional)
-- professional_license_id (string, optional)
-
-**Responses:**
-- 200: Returns updated user (without password)
-- 205: Warning — updating sensitive fields (email/username) logs the user out
-- 422: Validation error
+### Medication Logs
+*   **GET `/medications/logs`**: Retrieve history of medication intake.
+*   **POST `/medications/logs`**: Log a medication dose taken.
+*   **GET `/medications/logs/latest`**: Get the most recent log entry.
+*   **GET `/medications/logs/{date}`**: Get logs for a specific timestamp (ISO 8601).
 
 ---
 
-## Documentation / Export
-
-### GET /export
-**Summary:** Give Me PDF  
-
-**Responses:**
-- 200: Returns a PDF document
+## 📄 Export & Documents
+*   **GET `/export`**: Generates and provides a PDF export.
 
 ---
 
-## Data Models
+## 🛠️ Key Schemas
 
-### BaseUsers
-- username (string, optional)
-- email (string, required)
-- contact_number (string, required)
-- professional_license_id (string, optional)
-- password (string, required)
+### User Object (`Users`)
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `email` | string (email) | Primary identifier. |
+| `role` | array[string] | `patient` or `professional`. |
+| `disabled` | boolean | Account status. |
 
----
-
-### LoginData
-- username (string, required)
-- password (string, required)
-- role (string, required: professional | patient)
-
----
-
-### UpdateUser
-- username (string, optional)
-- email (string, optional)
-- contact_number (string, optional)
-- password (string, optional)
-- professional_license_id (string, optional)
+### Medication Params (`TMedicationParams`)
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | string | Name of the medication. |
+| `frequency` | integer | Number of times per unit. |
+| `recommended_dosage` | number | Amount per dose. |
 
 ---
 
-### UserWithoutPassword
-- username (string, optional)
-- email (string, required)
-- contact_number (string, required)
-- professional_license_id (string, optional)
-
----
-
-### Users
-- username (string, optional)
-- email (string, required)
-- contact_number (string, required)
-- professional_license_id (string, optional)
-- password (string, required)
-- id (integer, optional)
-- role (array of string: patient | professional)
-- created_at (datetime, required)
-- updated_at (datetime, required)
-- disabled (boolean, required)
-
----
-
-### ValidationError
-- loc (array)
-- msg (string)
-- type (string)
-- input (any, optional)
-- ctx (object, optional)
-
----
-
-### HTTPValidationError
-- detail (array of ValidationError)
-
+> [!WARNING]
+> **Validation Errors (422)**  
+> Most write operations will return a `422 Unprocessable Entity` if the request body does not strictly adhere to the defined schemas.
