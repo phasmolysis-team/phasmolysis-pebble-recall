@@ -31,4 +31,4 @@ class MoodLogsWithTimestamp(MoodLogs, table=False):
     def __init__(self, **args):
         super().__init__(**args)
         uid = uuid.UUID(bytes=self.id.bytes, version=7)
-        self.timestamp = datetime.datetime.fromtimestamp(uid.time/ 1000)
+        self.timestamp = datetime.datetime.fromtimestamp(uid.time / 1000)

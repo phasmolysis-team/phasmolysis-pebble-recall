@@ -93,4 +93,3 @@ class TMedication(SQLModel, table=True):
             times_per=self.frequency_times_per_unit,
         )
         return f
-

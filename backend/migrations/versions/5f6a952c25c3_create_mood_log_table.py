@@ -19,6 +19,7 @@ down_revision: Union[str, Sequence[str], None] = "a5f7ad507978"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+
 def upgrade() -> None:
     op.create_table(
         "mood_logs",
@@ -28,8 +29,11 @@ def upgrade() -> None:
         sa.Column("arousal", sa.Float(), server_default="0.0", nullable=False),
         # Use the explicit constraint OR the inline one, but not both
         sa.ForeignKeyConstraint(
-            ["user_id"], ["users.id"], name="fk_users_user_id", 
-            ondelete="CASCADE", onupdate="CASCADE"
+            ["user_id"],
+            ["users.id"],
+            name="fk_users_user_id",
+            ondelete="CASCADE",
+            onupdate="CASCADE",
         ),
     )
 
