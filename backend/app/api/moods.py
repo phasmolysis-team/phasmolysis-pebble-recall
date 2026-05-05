@@ -39,7 +39,7 @@ async def get_mood_logs(
     statement = select(MoodLogs).where(MoodLogs.user_id == user.id)
     results = await session.exec(statement)
     logs = results.fetchall()
-    return logs
+    return [MoodLogsWithTimestamp(**log.model_dump()) for log in logs]
 
 
 @router.get(path="/moods/latest")

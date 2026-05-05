@@ -1,5 +1,6 @@
+from datetime import UTC
 import datetime
-from uuid import uuid7
+from uuid import uuid7, UUID
 from pydantic import UUID7
 from sqlmodel import SQLModel, Field
 import sqlalchemy as sa
@@ -10,7 +11,7 @@ from typing import Annotated
 class MoodLogs(SQLModel, table=True):
     __tablename__ = "mood_logs"
     id: Annotated[
-        UUID7,
+        UUID,
         Field(
             primary_key=True,
         ),
@@ -24,8 +25,8 @@ class MoodLogs(SQLModel, table=True):
 
 
 class MoodLogsWithTimestamp(MoodLogs, table=False):
-    timestamp: Annotated[datetime.datetime, Field()]
+    timestamp: Annotated[str, Field()]
 
     def __init__(self, **args):
         super().__init__(**args)
-        self.timestamp = datetime.datetime.fromtimestamp(self.id.time)
+        self.timestamp = str(self.id.time / 1000)
