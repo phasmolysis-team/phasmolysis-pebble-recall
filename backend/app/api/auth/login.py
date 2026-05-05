@@ -47,7 +47,7 @@ async def login_user(
     data: Annotated[LoginData, Form()],
     is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
 ):
-    if not is_logged_in:
+    if is_logged_in:
         raise HTTPException(
             status_code=HTTP_406_NOT_ACCEPTABLE, detail="You must logout first."
         )
@@ -135,7 +135,7 @@ async def register_new_user(
     payload: Annotated[BaseUsers, Form()],
     is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
 ):
-    if not is_logged_in:
+    if is_logged_in:
         raise HTTPException(
             status_code=HTTP_406_NOT_ACCEPTABLE, detail="You must logout first."
         )
