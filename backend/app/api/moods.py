@@ -1,5 +1,5 @@
 from uuid import uuid7
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 from app.models.moods import MoodLogs, MoodLogsWithTimestamp
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
 from app.core.security.jwt_service import Claims

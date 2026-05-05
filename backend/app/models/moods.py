@@ -1,7 +1,5 @@
 import uuid
-from datetime import UTC
 import datetime
-from uuid import uuid7, UUID
 from pydantic import UUID7
 from sqlmodel import SQLModel, Field
 import sqlalchemy as sa
