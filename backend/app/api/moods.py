@@ -1,3 +1,5 @@
+from uuid import uuid7
+from pydantic import BaseModel, Json
 from app.models.moods import MoodLogs, MoodLogsWithTimestamp
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
 from app.core.security.jwt_service import Claims
@@ -10,10 +12,14 @@ from app.models.users import Users
 from app.core.database import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request 
 from sqlmodel import select, desc
 
 router = APIRouter()
+
+class MoodLogsParams(BaseModel):
+    valence: float
+    arousal: float
 
 
 @router.get(path="/moods")
@@ -59,3 +65,30 @@ async def get_mood_logs_latest(
         ret = MoodLogsWithTimestamp(**logs.model_dump())
         return ret
     return logs
+
+
+@router.post(path="/moods")
+async def add_mood_logs(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    claims: Annotated[Claims, Depends(check_encrypted_cookie_auth)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    payload: MoodLogsParams,
+):
+    if not is_logged_in:
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+    statement = select(Users).where(Users.email == claims.sub)
+    results = await session.exec(statement)
+    user = results.one_or_none()
+    if user is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if user.id is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    mood_log = MoodLogs(
+        id=uuid7(), user_id=user.id, valence=payload.valence, arousal=payload.arousal
+    )
+
+    return MoodLogsWithTimestamp(**mood_log.model_dump())
+
