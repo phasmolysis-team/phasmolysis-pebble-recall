@@ -24,7 +24,7 @@ router = APIRouter()
 
 
 class MedicationLogsParams(BaseModel):
-    medication: UUID7 | str
+    medication: str
     side_effects: str
     custom_date: datetime.datetime | None
 
@@ -152,8 +152,15 @@ async def add_medication_logs(
     else:
         id = uuid7()
 
-    if isinstance(payload.medication, UUID):
-        statement = select(TMedication).where(TMedication.id == payload.medication)
+    try:
+        medication_t = uuid.UUID(payload.medication, version=7)
+    except ValueError:
+        medication_t = payload.medication
+
+
+
+    if isinstance(medication_t, UUID):
+        statement = select(TMedication).where(TMedication.id == medication_t)
         results = await session.exec(statement)
         tmedication = results.first()
         if tmedication is None:
@@ -172,11 +179,12 @@ async def add_medication_logs(
         await session.commit()
         await session.refresh(log)
         return log
+
     log = MedicationLogs(
         id=id,
         user_id=user.id,
         medication_id=None,
-        medication_name=payload.medication,
+        medication_name=medication_t,
         user_noted_side_effects=payload.side_effects,
     )
     session.add(log)
