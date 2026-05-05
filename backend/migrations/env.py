@@ -1,5 +1,4 @@
 import asyncio
-import os
 from logging.config import fileConfig
 from app.core.config import settings
 

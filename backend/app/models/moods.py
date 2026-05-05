@@ -1,6 +1,6 @@
 import datetime
 from uuid import uuid7
-from pydantic import UUID7, BaseModel
+from pydantic import UUID7
 from sqlmodel import SQLModel, Field
 import sqlalchemy as sa
 from typing import Annotated

@@ -1,34 +1,17 @@
 from app.models.moods import MoodLogs, MoodLogsWithTimestamp
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
-from app.core.security.jwt_service import JwtService, Claims, get_jwt_service
-from sqlalchemy.exc import NoResultFound
-from datetime import UTC
-import datetime
+from app.core.security.jwt_service import Claims
 from starlette.status import (
     HTTP_401_UNAUTHORIZED,
     HTTP_500_INTERNAL_SERVER_ERROR,
-    HTTP_200_OK,
-    HTTP_409_CONFLICT,
-    HTTP_201_CREATED,
-    HTTP_406_NOT_ACCEPTABLE,
-    HTTP_404_NOT_FOUND,
 )
-from cryptography.exceptions import InvalidKey
-from app.core.security.kdf_pass import get_kdf
-from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
-from app.models.users import Users, UserWithoutPassword, BaseUsers
+from app.models.users import Users
 
 from app.core.database import get_session
-from app.schemas.cookies import (
-    set_default_cookie_params,
-    set_default_cookie_params_with_encryption,
-    decode_encrypted_cookie,
-)
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import Annotated, Literal
-from fastapi import APIRouter, Form, Depends, HTTPException, Response, Request
-from pydantic import BaseModel
-from sqlmodel import select, or_, desc
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlmodel import select, desc
 
 router = APIRouter()
 
