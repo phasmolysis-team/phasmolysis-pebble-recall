@@ -89,6 +89,9 @@ async def add_mood_logs(
     mood_log = MoodLogs(
         id=uuid7(), user_id=user.id, valence=payload.valence, arousal=payload.arousal
     )
+    session.add(mood_log)
+    await session.commit()
+    await session.refresh(mood_log)
 
     return MoodLogsWithTimestamp(**mood_log.model_dump())
 
