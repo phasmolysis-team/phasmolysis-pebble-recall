@@ -1,4 +1,4 @@
-from pydantic import Field, BaseModel, BeforeValidator
+from pydantic import Field, BaseModel, field_validator
 from typing import Annotated
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,7 +17,7 @@ class AuthConfig(BaseModel):
 class Settings(BaseSettings):
     AUTH: Annotated[AuthConfig, Field()] = AuthConfig()
     PG_URL: Annotated[str, Field()] = ""
-    ORIGINS: Annotated[set[str], BeforeValidator(split_csv)] = set()
+    ORIGINS: Annotated[set[str], Field()] = set()
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"
@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", extra="ignore", env_nested_delimiter="__"
     )
+
+    @field_validator('ORIGINS', mode='before')
+    @classmethod
+    def parse_csv_origins(cls, value: str) -> set[str]:
+        return split_csv(value)
 
 
 settings = Settings()
