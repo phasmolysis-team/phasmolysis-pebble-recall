@@ -1,12 +1,20 @@
-import { useRef, useState} from "preact/hooks";
+import { useRef, useState} from "react";
 import addRockIcon from './assets/add_rock_icon.png'
 import hamburgerIcon from './assets/hamburger_icon.png'
 import logsIcon from './assets/logs_icon.png'
 import exportIcon from './assets/export_icon.png'
 import './pebble_toss_hud.css'
 
-
-export function EnergyBar() {
+export function ThrowHUD(){
+  return (
+    <>
+    <button  style={styles.topRightContainer}>x</button>
+    <EnergyBar/>
+    <ThrowRock/>
+    </>
+  )
+}
+function EnergyBar() {
   const [verticalValue, setVerticalValue] = useState<number>(60);
    const verticalRef = useRef<HTMLDivElement | null>(null);
    const updateVertical = (clientY: number): void => {
@@ -73,18 +81,31 @@ export function EnergyBar() {
 }
 type PebbleTossHUDProps = {
   openNewRockMenu: () => void;
+  openLogList: () => void;
+  openSideEffectJournal: () => void;
 };
-export function PebbleTossHUD({ openNewRockMenu }: PebbleTossHUDProps) {
+
+
+export function PebbleTossHUD({ openNewRockMenu, openLogList, openSideEffectJournal}: PebbleTossHUDProps) {
   return (
     <>
-      <HamburgerMenu />
+      <HamburgerMenu openLogList={openLogList} openSideEffectJournal={openSideEffectJournal}/>
 
       <NewRockButton openNewRockMenu={openNewRockMenu} />
     </>
   );
 }
 
-function HamburgerMenu()
+function ThrowRock()
+{
+  return (
+    <>
+      <button id="throwButton" class="decision-button">throw</button>
+    </>
+  )
+}
+
+function HamburgerMenu({openLogList = () => {}, openSideEffectJournal = () => {}})
 {
     const [open, setOpen] = useState(false);
     return (
@@ -98,7 +119,8 @@ function HamburgerMenu()
 
         {open && (
           <div style={styles.dropdown}>
-            <button style={styles.iconButton}>
+            <button onClick={openSideEffectJournal}>Test</button>
+            <button onClick={openLogList} style={styles.iconButton}>
                 <img src={logsIcon} style="width:50px; height:50px;"></img>
             </button>
             <button style={styles.iconButton}>
@@ -131,8 +153,9 @@ const styles: Record<string, any> = {
   section: {
     display: "flex",
     position:"fixed",
+
     right: "50px",
-    bottom: "100px",
+    top:"30%",
     flexDirection: "column",
     alignItems: "center",
     gap: "14px",
@@ -184,7 +207,7 @@ const styles: Record<string, any> = {
     flexDirection: "column",
     alignItems: "center",
     gap: "10px",
-    zIndex: 1000,
+    zIndex: "1000",
   },
 
   hamburgerButton: {

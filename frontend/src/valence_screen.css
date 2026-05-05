@@ -1,7 +1,30 @@
-
-html, body, #app, #app>div {
+#valenceBackground{
+ 
   height: 100vh;
   margin: 0;
   padding: 0;
     
+
 }
+
+#topRightXButton{
+    position:absolute;
+    top:50px;
+    right: 10%;
+    font-size : 30px;
+    color:black;
+    border:5px solid black;
+    border-radius: 100px;
+    padding:0;
+    width:80px;
+    height:80px;
+    font-weight:bold;
+    background:white;
+    cursor:pointer;
+
+    @media (max-width: 760px) {
+        right: 10px;
+        width:60px;
+        height:60px;
+    }
+};

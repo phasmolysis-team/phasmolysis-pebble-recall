@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "preact/hooks"
+import { useState, useEffect, useRef } from "react"
 import stone from './assets/stone.png'
 import { Logo } from "./logo"
-import { PebbleTossHUD } from './pebble_toss_hud.tsx'
+import { ThrowHUD, PebbleTossHUD } from './pebble_toss_hud.tsx'
 import {PebbleLogListScreen} from './pebbles_log_list.tsx'
 import { ValenceScreen } from './valence_screen.tsx'
+import { SideEffectsJournalPopup } from "./side_effects_popup.tsx"
 
 
 interface Ripple {
@@ -456,13 +457,19 @@ export function Pond() {
     <>
     <Logo></Logo>
     {page === "pond" && (
-      <PebbleTossHUD openNewRockMenu={() => setPage("throw")}/>
+      <PebbleTossHUD openNewRockMenu={() => setPage("valence")} openLogList={() => setPage("log_list")} openSideEffectJournal={() => setPage("side_effect")}/>
     )}
-    {page === "throw" &&(
-      <ValenceScreen/>
+    {page === "valence" &&(
+      <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} goToEnergyBarScreen={() => setPage("throw")}/>
+    )}
+    {page === "throw" && (
+      <ThrowHUD/>
     )}
      {page === "log_list" &&(
       <PebbleLogListScreen/>
+    )}
+     {page === "side_effect" &&(
+      <SideEffectsJournalPopup/>
     )}
     <div
       style={{
@@ -489,6 +496,14 @@ export function Pond() {
           fontFamily: "sans-serif"
         }}
       >
+       
+      </div>
+    </div>
+    </>
+  )
+}
+
+ /*
         <div>Power</div>
 
         <input
@@ -504,9 +519,4 @@ export function Pond() {
            mouse.current.power =
         Number(e.currentTarget.value)
           }}
-        />
-      </div>
-    </div>
-    </>
-  )
-}
+        />*/
