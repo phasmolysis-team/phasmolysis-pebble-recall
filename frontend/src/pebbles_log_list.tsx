@@ -1,5 +1,6 @@
 /** @jsxImportSource preact */
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useState } from "react";
+import {Calendar} from './calendar.tsx'
 
 type LogEntry = {
   id: number;
@@ -15,6 +16,7 @@ type RGB = {
 };
 
 export function PebbleLogListScreen() {
+  const [calendarOpen, setCalendarOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
@@ -59,6 +61,10 @@ export function PebbleLogListScreen() {
   }, [logs, selectedDate]);
 
   return (
+   <>
+   {calendarOpen && (
+    <Calendar/>
+   )}
     <div style={styles.page}>
       {/* Top Bar */}
       <div style={styles.topBar}>
@@ -68,20 +74,13 @@ export function PebbleLogListScreen() {
         </div>
 
         {/* Calendar Picker */}
-        <label style={styles.calendarButton}>
-          📅
 
-          <input
-            type="date"
-            value={selectedDate}
-            onInput={(e) =>
-              setSelectedDate(
-                (e.currentTarget as HTMLInputElement).value
-              )
-            }
-            style={styles.hiddenInput}
-          />
-        </label>
+          <button onClick={()=> setCalendarOpen(true)} style = {styles.calendarButton}
+          
+            value={selectedDate}>
+              📅
+            </button>
+      
       </div>
 
       {/* Timeline */}
@@ -145,6 +144,7 @@ export function PebbleLogListScreen() {
         })}
       </div>
     </div>
+    </>
   );
 }
 
@@ -224,14 +224,16 @@ function interpolateGradient(
 const styles: Record<string, any> = {
   
   page: {
-    width: "100vw",
-    minHeight: "100vh",
-    background: "#f7f7f7",
+    position:"fixed",
+    width:"100%",
+    height:"100vh",
+    background: "white",
     fontFamily: "youngseifRegular",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    color: "#111",
+
+    color: "black",
   },
 
   topBar: {
@@ -262,13 +264,6 @@ const styles: Record<string, any> = {
     fontSize: "28px",
     position: "relative",
     overflow: "hidden",
-  },
-
-  hiddenInput: {
-    position: "absolute",
-    inset: 0,
-    opacity: 0,
-    cursor: "pointer",
   },
 
   timelineContainer: {

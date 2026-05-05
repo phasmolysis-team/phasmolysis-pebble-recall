@@ -7,127 +7,6 @@ type DayInfo = {
   value: number;
 };
 
-const styles = `
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    padding: 20px;
-    background: white;
-    font-family: Arial, sans-serif;
-  }
-
-  .calendar-wrapper {
-    width: 100%;
-    background: white;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-  }
-
-  .calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: #1f2937;
-    color: white;
-  }
-
-  .header-center {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  .arrow-group {
-    display: flex;
-    gap: 6px;
-  }
-
-  .arrow-btn {
-    border: none;
-    background: rgba(255,255,255,0.12);
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.15s ease;
-  }
-
-  .arrow-btn:hover {
-    background: rgba(255,255,255,0.22);
-  }
-
-  .weekdays,
-  .calendar-grid {
-    display: grid;
-    
-    grid-template-columns: repeat(7, 1fr);
-  }
-
-  .weekday {
-    text-align: center;
-    padding: 10px 0;
-    background: #ececec;
-    font-size: 13px;
-    font-weight: bold;
-  }
-
-  .calendar-grid {
-    grid-auto-rows: 72px;
-  }
-
-  .day-cell {
-    position: relative;
-    border: 1px solid #efefef;
-    cursor: pointer;
-    background: white;
-    transition: background 0.15s ease;
-  }
-
-  .day-cell:hover {
-    background: #f7fbff;
-  }
-
-  .day-cell.selected {
-    background: #dcebff;
-  }
-
-  .day-number {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  .circle {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 999px;
-  }
-
-  .circle.small {
-    width: 12px;
-    height: 12px;
-  }
-
-  .circle.big {
-    width: 24px;
-    height: 24px;
-  }
-
-  .empty-cell {
-    border: 1px solid #f3f3f3;
-    background: #fafafa;
-  }
-`;
 
 const sampleData: Record<number, DayInfo> = {
   2: { size: "small", value: 0.1 },
@@ -316,3 +195,125 @@ export function Calendar() {
   );
 }
 
+
+const styles = `
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: white;
+    font-family: Arial, sans-serif;
+  }
+
+  .calendar-wrapper {
+    position: fixed;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    z-index: 1000;
+  }
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #1f2937;
+    color: white;
+  }
+
+  .header-center {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .arrow-group {
+    display: flex;
+    gap: 6px;
+  }
+
+  .arrow-btn {
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.15s ease;
+  }
+
+  .arrow-btn:hover {
+    background: rgba(255,255,255,0.22);
+  }
+
+  .weekdays,
+  .calendar-grid {
+    display: grid;
+    
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .weekday {
+    text-align: center;
+    padding: 10px 0;
+    background: #ececec;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .calendar-grid {
+    grid-auto-rows: 72px;
+  }
+
+  .day-cell {
+    position: relative;
+    border: 1px solid #efefef;
+    cursor: pointer;
+    background: white;
+    transition: background 0.15s ease;
+  }
+
+  .day-cell:hover {
+    background: #f7fbff;
+  }
+
+  .day-cell.selected {
+    background: #dcebff;
+  }
+
+  .day-number {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .circle {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 999px;
+  }
+
+  .circle.small {
+    width: 12px;
+    height: 12px;
+  }
+
+  .circle.big {
+    width: 24px;
+    height: 24px;
+  }
+
+  .empty-cell {
+    border: 1px solid #f3f3f3;
+    background: #fafafa;
+  }
+`;

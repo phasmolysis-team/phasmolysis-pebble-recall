@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo} from "preact/hooks";
+import { useRef, useState, useMemo} from "react";
 import iconLogo from './assets/logo.png'
 import './valence_screen.css'
 type RGB = {
@@ -8,8 +8,14 @@ type RGB = {
 };
 
 
-export function ValenceScreen()
+type ValenceScreenProps = {
+  dismissValenceScreenAndReopenHUD: (value:string) => void;
+  goToEnergyBarScreen: (value:string) => void;
+};
+
+export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarScreen}: ValenceScreenProps)
 {
+   
     const [horizontalValue, setHorizontalValue] = useState<number>(0);
      const horizontalRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,8 +74,11 @@ export function ValenceScreen()
   };
     
   return (
-    <div style={styles.valenceBackground}>
+ 
+    <div id="valenceBackground" style={styles.valenceBackground}>
+        
         <div style={styles.valenceScreen}>
+            <button id="topRightXButton" onClick={() => dismissValenceScreenAndReopenHUD("pond")}>x</button>
             
         <p id="valenceText">How are you feeling today?</p>
             {/* Image */}
@@ -107,7 +116,7 @@ export function ValenceScreen()
             
         </div>
 
-        <button class="decision-button">
+        <button class="decision-button" onClick={()=> goToEnergyBarScreen("throw")}>
                 next
             </button>
 
@@ -115,6 +124,8 @@ export function ValenceScreen()
         
         </div>
      </div>
+    
+     
     
   );
 }
@@ -196,6 +207,8 @@ const styles: Record<string, any> = {
     justifyContent: "center",
     alignItems: "center",
   },
+
+  
 
   
   imageWrapper: {
