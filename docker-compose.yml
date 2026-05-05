@@ -52,6 +52,7 @@ services:
       AUTH__COOKIE_SECRET: ${AUTH__COOKIE_SECRET}
       AUTH__JWT_SECRET: ${AUTH__JWT_SECRET}
       PG_URL: postgresql+asyncpg://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
+      ORIGINS: ${ORIGINS}
       HOST: 0.0.0.0
       PORT: 8080
     ports:
