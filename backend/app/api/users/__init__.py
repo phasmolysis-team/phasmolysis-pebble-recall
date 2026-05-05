@@ -30,12 +30,17 @@ CurrentClaims = Annotated[Claims, Depends(check_encrypted_cookie_auth)]
 @router.get("/users")
 async def get_current_user(
     claims: CurrentClaims, session: Annotated[AsyncSession, Depends(get_session)]
-) -> Users | None:
+) -> UserWithoutPassword | None:
     statement = select(Users).where(
         or_(Users.username == claims.sub, Users.email == claims.sub)
     )
     result = await session.exec(statement)
-    return result.one_or_none()
+    user = result.one_or_none()
+    if user is None:
+        return
+    user_dict = user.model_dump()
+    del user_dict["password"]
+    return UserWithoutPassword(**user_dict)
 
 
 @router.delete("/users/{id}", response_model=UserWithoutPassword)
