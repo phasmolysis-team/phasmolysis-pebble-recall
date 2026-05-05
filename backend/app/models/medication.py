@@ -94,17 +94,3 @@ class TMedication(SQLModel, table=True):
         )
         return f
 
-    def to_medication(self) -> Medication:
-        return Medication(
-            id=self.id,
-            name=self.name,
-            dosage=self.get_dosage(),
-            frequency=self.get_frequency(),
-        )
-
-
-class Medication(BaseModel):
-    id: UUID7
-    name: str
-    dosage: Dosage
-    frequency: Frequency
