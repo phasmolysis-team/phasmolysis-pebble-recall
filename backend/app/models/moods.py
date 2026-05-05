@@ -25,7 +25,7 @@ class MoodLogs(SQLModel, table=True):
     arousal: Annotated[float, Field(sa_column=sa.Column(sa.Float))] = 0.0
 
 
-class MoodLogsWithTimestamp(MoodLogs):
+class MoodLogsWithTimestamp(MoodLogs, table=False):
     timestamp: Annotated[datetime.datetime, Field()]
 
     def __init__(self, **args):
