@@ -85,9 +85,9 @@ async def add_mood_logs(
 
     if user.id is None:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-
+    id = uuid7()
     mood_log = MoodLogs(
-        id=uuid7(), user_id=user.id, valence=payload.valence, arousal=payload.arousal
+        id=id, user_id=user.id, valence=payload.valence, arousal=payload.arousal
     )
     session.add(mood_log)
     await session.commit()

@@ -11,7 +11,7 @@ import sqlalchemy as sa
 class MedicationLogs(SQLModel, table=True):
     __tablename__ = "medication_logs"
     id: Annotated[
-        str,
+        UUID7,
         Field(
             primary_key=True,
         ),
@@ -30,5 +30,5 @@ class MedicationLogsWithTimestamp(MedicationLogs, table=False):
 
     def __init__(self, **args):
         super().__init__(**args)
-        uid = uuid.UUID(self.id, version=7)
+        uid = uuid.UUID(bytes=self.id.bytes, version=7)
         self.timestamp = datetime.datetime.fromtimestamp(uid.time/ 1000)
