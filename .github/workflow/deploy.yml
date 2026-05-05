@@ -1,6 +1,7 @@
 name: Trigger Gitea Action
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
 
