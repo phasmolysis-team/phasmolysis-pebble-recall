@@ -30,6 +30,7 @@ def upgrade() -> None:
             sa.ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
             nullable=False,
         ),
+        sa.Column("medicine_name", sa.Text, nullable=False),
         sa.Column("side_effects", sa.Text, nullable=True),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], name="fk_users_user_id"),
     ]
