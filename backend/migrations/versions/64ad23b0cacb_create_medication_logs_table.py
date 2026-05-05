@@ -28,7 +28,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "user_id",
-            sa.ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
+            sa.Integer,
             nullable=False,
         ),
         sa.Column("medication_name", sa.Text, nullable=True),
