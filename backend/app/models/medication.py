@@ -1,76 +1,112 @@
+from uuid import uuid7
 import datetime
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, UUID7
 import sqlalchemy as sa
 from typing import Annotated, Literal
+from sqlmodel import SQLModel
+import sqlmodel as sm
+
+type DosageUnit = Literal[
+    "mg",  # milligrams - most common
+    "g",  # grams
+    "mcg",  # micrograms (ug is ambiguous, mcg is standard medical)
+    # volume-based (liquid meds, syrup)
+    "ml",  # milliliters
+    "l",  # liters (rare but complete)
+    "tbsp",  # tablespoon (common for syrups)
+    "tsp",  # teaspoon (common for syrups)
+    # unit-based (solid forms)
+    "tablet",
+    "capsule",
+    "caplet",
+    "softgel",
+    "patch",  # transdermal patches
+    "suppository",
+    # concentration-based (injectable)
+    "meq",  # milliequivalents - used for lithium, electrolytes
+    "iu",  # international units - used for some vitamins/hormones
+    # other
+    "drop",  # eye/ear drops
+    "spray",  # nasal sprays
+    "puff",  # inhalers
+]
+
+type FreqUnit = Literal[
+    "hourly",  # every X hours
+    "daily",  # every X days
+    "weekly",  # every X weeks
+    "monthly",  # every X months
+    # meal-based
+    "before_meal",  # 30mins before eating
+    "with_meal",  # take with food
+    "after_meal",  # take after eating
+    "on_empty_stomach",
+    # time of day
+    "morning",  # once in the morning
+    "afternoon",
+    "evening",
+    "bedtime",  # very common for psych meds
+    # conditional
+    "as_needed",  # PRN in medical terms
+    "during_episode",  # only during mood episodes
+]
 
 
-class Dosage:
+class Dosage(BaseModel):
     amount: float
-    unit: Literal[
-        "mg",  # milligrams - most common
-        "g",  # grams
-        "mcg",  # micrograms (ug is ambiguous, mcg is standard medical)
-        # volume-based (liquid meds, syrup)
-        "ml",  # milliliters
-        "l",  # liters (rare but complete)
-        "tbsp",  # tablespoon (common for syrups)
-        "tsp",  # teaspoon (common for syrups)
-        # unit-based (solid forms)
-        "tablet",
-        "capsule",
-        "caplet",
-        "softgel",
-        "patch",  # transdermal patches
-        "suppository",
-        # concentration-based (injectable)
-        "meq",  # milliequivalents - used for lithium, electrolytes
-        "iu",  # international units - used for some vitamins/hormones
-        # other
-        "drop",  # eye/ear drops
-        "spray",  # nasal sprays
-        "puff",  # inhalers
-    ]
+    unit: DosageUnit | str
 
 
-class Frequency:
+class Frequency(BaseModel):
     # for "every X days/weeks"
     every: int | None = None  # every 1 day, every 7 days
-    unit: Literal[
-        "hourly",  # every X hours
-        "daily",  # every X days
-        "weekly",  # every X weeks
-        "monthly",  # every X months
-        # meal-based
-        "before_meal",  # 30mins before eating
-        "with_meal",  # take with food
-        "after_meal",  # take after eating
-        "on_empty_stomach",
-        # time of day
-        "morning",  # once in the morning
-        "afternoon",
-        "evening",
-        "bedtime",  # very common for psych meds
-        # conditional
-        "as_needed",  # PRN in medical terms
-        "during_episode",  # only during mood episodes
-    ]
+    unit: FreqUnit | str
 
     # for "3 times a day at these times"
     times_per: int
-    when: list[datetime.time] = []
+
+class TMedication(SQLModel, table=True):
+    __tablename__ = "medication"
+    id: Annotated[
+        UUID7,
+        sm.Field(
+            sa_column=sa.Column(
+                sa.UUID(as_uuid=True),
+            ),
+        ),
+    ] = uuid7()
+    name: Annotated[str, sm.Field(sa_column=sa.Column(sa.Text))]
+    frequency: Annotated[int, sm.Field(sa_column=sa.Column(sa.Integer))]
+    frequency_unit: Annotated[FreqUnit | str, sm.Field(sa_column=sa.Column(sa.Text))]
+    frequency_times_per_unit: Annotated[int, sm.Field(sa_column=sa.Column(sa.Integer))]
+    recommended_dosage: Annotated[float, sm.Field(sa_column=sa.Column(sa.Float))]
+    recommended_dosage_unit: Annotated[
+        DosageUnit | str, sm.Field(sa_column=sa.Column(sa.Text))
+    ]
+
+    def get_dosage(self) -> Dosage:
+        d = Dosage(unit=self.recommended_dosage_unit, amount=self.recommended_dosage)
+        return d
+
+    def get_frequency(self) -> Frequency:
+        f = Frequency(
+            every=self.frequency,
+            unit=self.frequency_unit,
+            times_per=self.frequency_times_per_unit,
+        )
+        return f
+
+    def to_medication(self) -> Medication:
+        return Medication(
+            id=self.id,
+            name=self.name,
+            dosage=self.get_dosage(),
+            frequency=self.get_frequency(),
+        )
 
 
 class Medication(BaseModel):
-    id: str
+    id: UUID7
     name: str
     dosage: Dosage
     frequency: Frequency
-
-
-class MedicationLog(BaseModel):
-    id: str
-    medication: Medication
-    time_taken: Annotated[
-        datetime.datetime | None, Field(sa.TIMESTAMP(timezone=True))
-    ]  # None if not taken
-    taken: bool  # derived from time_taken but explicit is better than implicit
