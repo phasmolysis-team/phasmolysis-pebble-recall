@@ -17,7 +17,7 @@ class AuthConfig(BaseModel):
 class Settings(BaseSettings):
     AUTH: Annotated[AuthConfig, Field()] = AuthConfig()
     PG_URL: Annotated[str, Field()] = ""
-    ORIGINS: Annotated[set[str], Field()] = set()
+    ORIGINS: Annotated[str | set[str], Field()] = set()
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"
