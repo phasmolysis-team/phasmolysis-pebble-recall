@@ -15,7 +15,7 @@ type RGB = {
   b: number;
 };
 
-export function PebbleLogListScreen() {
+export function PebbleLogListScreen({dismissPebbleLogListScreenAndShowHUD = () => {}}) {
   const [calendarOpen, setCalendarOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
@@ -65,6 +65,7 @@ export function PebbleLogListScreen() {
    {calendarOpen && (
     <Calendar/>
    )}
+   <button class="topRightXButton_topRight" onClick={dismissPebbleLogListScreenAndShowHUD}>x</button>
     <div style={styles.page}>
       {/* Top Bar */}
       <div style={styles.topBar}>
@@ -236,9 +237,10 @@ const styles: Record<string, any> = {
     color: "black",
   },
 
+ 
+
   topBar: {
     width: "100%",
-
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -254,15 +256,18 @@ const styles: Record<string, any> = {
   calendarButton: {
     width: "60px",
     height: "60px",
+    top:"90px",
+    right:"20px",
     borderRadius: "18px",
     background: "white",
-    border: "3px solid black",
+    border:"5px solid black",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
     fontSize: "28px",
-    position: "relative",
+    
+    position: "absolute",
     overflow: "hidden",
   },
 

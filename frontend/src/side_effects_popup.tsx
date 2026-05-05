@@ -10,7 +10,7 @@ type SavedData = {
   [date: string]: EntryData;
 };
 
-export  function SideEffectsJournalPopup() {
+export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) {
   const [savedData, setSavedData] = useState<SavedData>({
     "2026-05-01": {
       text: "Went jogging today.",
@@ -64,6 +64,7 @@ export  function SideEffectsJournalPopup() {
   return (
     <>
       <div style={styles.overlay}>
+        <button class="topRightXButton" onClick={dismissScreenAndReopenHUD}>x</button>
         <div style={styles.popup}>
           <h1 style={styles.title}>Daily Journal</h1>
 
@@ -143,6 +144,7 @@ export  function SideEffectsJournalPopup() {
 }
 
 const styles: Record<string, CSSProperties> = {
+  
   overlay: {
     position: "fixed",
     inset: 0,
@@ -151,6 +153,22 @@ const styles: Record<string, CSSProperties> = {
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
+  },
+
+  xButton: {
+    position:"absolute",
+    top:"50px",
+    right: "10%",
+    fontSize : "30px",
+    color:"black",
+    border:"5px solid black",
+    borderRadius: "100px",
+    padding:"0",
+    width:"60px",
+    height:"60px",
+    fontWeight:"bold",
+    background:"white",
+    cursor:"pointer",
   },
 
   popup: {

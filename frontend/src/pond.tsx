@@ -463,13 +463,13 @@ export function Pond() {
       <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} goToEnergyBarScreen={() => setPage("throw")}/>
     )}
     {page === "throw" && (
-      <ThrowHUD/>
+      <ThrowHUD returnToPondHUD={() => setPage("pond")}/>
     )}
      {page === "log_list" &&(
-      <PebbleLogListScreen/>
+      <PebbleLogListScreen dismissPebbleLogListScreenAndShowHUD={() => setPage("pond")}/>
     )}
      {page === "side_effect" &&(
-      <SideEffectsJournalPopup/>
+      <SideEffectsJournalPopup dismissScreenAndReopenHUD={() => setPage("pond")}/>
     )}
     <div
       style={{

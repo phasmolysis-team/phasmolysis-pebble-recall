@@ -5,10 +5,10 @@ import logsIcon from './assets/logs_icon.png'
 import exportIcon from './assets/export_icon.png'
 import './pebble_toss_hud.css'
 
-export function ThrowHUD(){
+export function ThrowHUD({returnToPondHUD = () => {}}){
   return (
     <>
-    <button  style={styles.topRightContainer}>x</button>
+    <button class="topRightXButton_topRight" onClick={returnToPondHUD}>x</button>
     <EnergyBar/>
     <ThrowRock/>
     </>
@@ -119,9 +119,12 @@ function HamburgerMenu({openLogList = () => {}, openSideEffectJournal = () => {}
 
         {open && (
           <div style={styles.dropdown}>
-            <button onClick={openSideEffectJournal}>Test</button>
-            <button onClick={openLogList} style={styles.iconButton}>
-                <img src={logsIcon} style="width:50px; height:50px;"></img>
+            <button onClick={openSideEffectJournal} style={styles.iconButton}>
+               <img src={logsIcon} style="width:50px; height:50px;">
+               </img>
+               </button>
+            <button onClick={openLogList} >
+                  X
             </button>
             <button style={styles.iconButton}>
                 <img src={exportIcon} style="width:50px; height:50px;"></img>
