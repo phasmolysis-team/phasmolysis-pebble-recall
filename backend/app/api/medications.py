@@ -4,8 +4,7 @@ from app.models.medication import TMedication, FreqUnit, DosageUnit
 import datetime
 from app.models.medication_logs import MedicationLogs, MedicationLogsWithTimestamp
 from uuid import uuid7, UUID
-from pydantic import BaseModel, UUID7
-from app.models.moods import MoodLogs, MoodLogsWithTimestamp
+from pydantic import BaseModel
 from app.middlewares.auth import check_if_logged_in, check_encrypted_cookie_auth
 from app.core.security.jwt_service import Claims
 from starlette.status import (

@@ -1,6 +1,4 @@
 import uuid
-from datetime import UTC
-from uuid import uuid7, UUID
 from typing import Annotated
 from sqlmodel import SQLModel, Field
 from pydantic import UUID7
