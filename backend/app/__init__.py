@@ -1,7 +1,7 @@
 import os
 from app.core.config import settings
 
-from .api import auth, users, texport
+from .api import auth, users, texport, moods
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -18,6 +18,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, tags=["users"])
 app.include_router(texport.router, tags=["docs"])
+app.include_router(moods.router, tags=["moods"])
 
 frontend_dist = os.path.join(os.path.dirname(__file__), "..", "frontend-dist")
 if os.path.isdir(frontend_dist):
