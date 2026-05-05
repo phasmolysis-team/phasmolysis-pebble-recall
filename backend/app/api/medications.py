@@ -157,8 +157,6 @@ async def add_medication_logs(
     except ValueError:
         medication_t = payload.medication
 
-
-
     if isinstance(medication_t, UUID):
         statement = select(TMedication).where(TMedication.id == medication_t)
         results = await session.exec(statement)
