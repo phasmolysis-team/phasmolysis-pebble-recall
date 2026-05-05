@@ -42,4 +42,4 @@ EXPOSE 8080
 
 # Run backend (uvicorn will serve the FastAPI app)
 # Set HOST=0.0.0.0 for container access
-CMD ["uv", "run", "-m", "app"]
+CMD ["uv", "run", "--no-dev", "-m", "app"]
