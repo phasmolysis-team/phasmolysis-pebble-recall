@@ -23,6 +23,7 @@ from sqlmodel import select, desc, or_
 
 router = APIRouter()
 
+
 class MedicationLogsMatrixParams(BaseModel):
     medications: list[str]
     side_effects: str = ""
@@ -203,7 +204,6 @@ async def add_medication_logs(
     return log
 
 
-
 @router.post(path="/medications")
 async def add_new_medication(
     request: Request,
@@ -262,13 +262,14 @@ async def add_medication_logs_matrix(
         medication_logs_params = MedicationLogsParams(
             medication=medication,
             custom_date=payload.custom_date,
-            side_effects=payload.side_effects
+            side_effects=payload.side_effects,
         )
         task = _add_medication_logs(session, medication_logs_params, user)
         tasks.append(task)
 
     results = await asyncio.gather(*tasks)
     return results
+
 
 @router.post(path="/side-effects/retrieve")
 async def get_medication_logs_matrix(
@@ -296,8 +297,7 @@ async def get_medication_logs_matrix(
             q.append(MedicationLogs.medication_id == uid)
         except ValueError:
             q.append(MedicationLogs.medication_name == medication)
-    
+
     statement = select(MedicationLogs).where(or_(*q)).order_by(desc(MedicationLogs.id))
     results = await session.exec(statement)
     return results.all()
-
