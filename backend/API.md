@@ -2,83 +2,75 @@
 
 **Base URL:** `/api`  
 **Version:** `0.1.0`
-**Reference**: [openapi.json](./openapi.json)
 
 ---
 
 ## 🔐 Authentication
-Handle user sessions and identity verification.
-
-| Method | Endpoint | Summary | Description |
+| Method | Endpoint | Summary | Details |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/auth/register` | Register New User | Creates a new account using `email`, `password`, and `contact_number`. |
-| `POST` | `/auth/login` | Login User | Authenticates user via form-data. Requires `username`, `password`, and `role`. |
-| `GET` | `/auth/decrypt_cookie` | Decrypt Cookie | Retrieves and decrypts the current session cookie. |
-| `GET` | `/auth/logout` | Logout User | Ends the current user session. |
+| `POST` | `/auth/register` | Register New User | Payload: `BaseUsers` (Form-data). |
+| `POST` | `/auth/login` | Login User | Payload: `LoginData` (Form-data). |
+| `GET` | `/auth/decrypt_cookie` | Decrypt Cookie | Returns session data from cookie. |
+| `GET` | `/auth/logout` | Logout User | Invalidates session. |
 
 ---
 
 ## 👤 User Management
-Manage profile details and account status.
-
 | Method | Endpoint | Summary | Notes |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/users` | Get Current User | Returns the profile of the currently authenticated user. |
-| `PATCH` | `/users/{id}` | Update User | Updates user fields. **Note**: Email/Username changes trigger logout. |
-| `DELETE` | `/users/{id}` | Delete User | Permanently removes the user record by ID. |
+| `GET` | `/users` | Get Current User | Returns profile (without password). |
+| `PATCH` | `/users/{id}` | Update User | **Warning**: Sensitive changes trigger logout. |
+| `DELETE` | `/users/{id}` | Delete User | Removes user record by ID. |
 
 ---
 
 ## 🧠 Mood Tracking
-Endpoints for logging and retrieving emotional state data.
-
-*   **GET `/moods`**: Retrieve all mood logs.
-*   **POST `/moods`**: Add a new mood log entry.
-    *   **Payload**: `valence` (number), `arousal` (number).
-*   **GET `/moods/latest`**: Fetch the most recent mood entry.
+*   **GET `/moods`**: List all mood logs.
+*   **POST `/moods`**: Create log (`valence` and `arousal` required).
+*   **GET `/moods/latest`**: Fetch most recent entry.
 
 ---
 
-## 💊 Medications
-Manage medication lists and daily adherence logs.
+## 💊 Medications & Side Effects
 
-### Medication List
+### Medication Management
 *   **GET `/medications`**: List all saved medications.
-*   **POST `/medications`**: Add a new medication.
-    *   **Units**: Supports `mg`, `g`, `ml`, `tablet`, `capsule`, `puff`, etc.
-    *   **Frequency**: Supports `hourly`, `daily`, `before_meal`, `as_needed`, etc.
+*   **POST `/medications`**: Add new medication definition (Dosage/Frequency).
 
-### Medication Logs
-*   **GET `/medications/logs`**: Retrieve history of medication intake.
-*   **POST `/medications/logs`**: Log a medication dose taken.
-*   **GET `/medications/logs/latest`**: Get the most recent log entry.
-*   **GET `/medications/logs/{date}`**: Get logs for a specific timestamp (ISO 8601).
+### Individual Medication Logs
+*   **GET `/medications/logs`**: List historical logs.
+*   **POST `/medications/logs`**: Record specific intake.
+    *   **Body**: `medication` (string), `side_effects` (optional), `custom_date` (optional).
+*   **GET `/medications/logs/latest`**: Get latest intake record.
+*   **GET `/medications/logs/{date}`**: Filter logs by ISO timestamp.
+
+### 🆕 Side Effects & Matrix Logs
+These endpoints handle complex logging involving multiple medications and observed side effects.
+
+*   **POST `/side-effects/new`**: Add a matrix log entry.
+    *   **Body**: `medications` (array of strings), `side_effects` (string), `custom_date`.
+*   **POST `/side-effects/retreive`**: Retrieve filtered matrix logs based on medication criteria.
 
 ---
 
-## 📄 Export & Documents
-*   **GET `/export`**: Generates and provides a PDF export.
+## 📄 Documents
+*   **GET `/export`**: Export health data as a PDF.
 
 ---
 
-## 🛠️ Key Schemas
+## 🛠️ Data Models
 
-### User Object (`Users`)
+### Medication Matrix (`MedicationLogsMatrixParams`)
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `email` | string (email) | Primary identifier. |
-| `role` | array[string] | `patient` or `professional`. |
-| `disabled` | boolean | Account status. |
+| `medications` | array[string] | List of meds taken together. |
+| `side_effects` | string | Description of symptoms/effects. |
+| `custom_date` | datetime \| null | Optional override for log time. |
 
-### Medication Params (`TMedicationParams`)
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `name` | string | Name of the medication. |
-| `frequency` | integer | Number of times per unit. |
-| `recommended_dosage` | number | Amount per dose. |
+### Frequency Units (`FreqUnit`)
+Enums: `hourly`, `daily`, `weekly`, `monthly`, `before_meal`, `with_meal`, `after_meal`, `on_empty_stomach`, `morning`, `afternoon`, `evening`, `bedtime`, `as_needed`, `during_episode`.
 
 ---
 
-> [!WARNING]
-> **Validation Errors (422)**  
-> Most write operations will return a `422 Unprocessable Entity` if the request body does not strictly adhere to the defined schemas.
+> [!TIP]
+> All medication log endpoints now support an optional `side_effects` string and a `custom_date` timestamp for back-dating entries.
