@@ -1,3 +1,4 @@
+import uuid
 from datetime import UTC
 import datetime
 from uuid import uuid7, UUID
@@ -11,11 +12,11 @@ from typing import Annotated
 class MoodLogs(SQLModel, table=True):
     __tablename__ = "mood_logs"
     id: Annotated[
-        UUID,
+        str,
         Field(
             primary_key=True,
         ),
-    ] = uuid7()
+    ]
     user_id: Annotated[
         int,
         Field(sa_column=sa.Column(sa.Integer)),
@@ -25,8 +26,9 @@ class MoodLogs(SQLModel, table=True):
 
 
 class MoodLogsWithTimestamp(MoodLogs, table=False):
-    timestamp: Annotated[str, Field()]
+    timestamp: Annotated[datetime.datetime, Field()]
 
     def __init__(self, **args):
         super().__init__(**args)
-        self.timestamp = str(self.id.time / 1000)
+        uid = uuid.UUID(self.id,  version=7)
+        self.timestamp = datetime.datetime.fromtimestamp(uid.time/ 1000)
