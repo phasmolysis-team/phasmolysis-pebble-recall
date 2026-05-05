@@ -11,9 +11,7 @@ class MedicationLogs(SQLModel, table=True):
     id: Annotated[
         UUID7,
         Field(
-            sa_column=sa.Column(
-                sa.UUID(as_uuid=True),
-            ),
+            primary_key=True,
         ),
     ] = uuid7()
     user_id: Annotated[

@@ -70,9 +70,7 @@ class TMedication(SQLModel, table=True):
     id: Annotated[
         UUID7,
         sm.Field(
-            sa_column=sa.Column(
-                sa.UUID(as_uuid=True),
-            ),
+            primary_key=True,
         ),
     ] = uuid7()
     name: Annotated[str, sm.Field(sa_column=sa.Column(sa.Text))]
