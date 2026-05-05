@@ -5,6 +5,7 @@ Revises: 5f6a952c25c3
 Create Date: 2026-05-05 10:41:35.263675
 
 """
+
 from uuid import uuid7
 from typing import Sequence, Union
 
@@ -13,8 +14,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '64ad23b0cacb'
-down_revision: Union[str, Sequence[str], None] = '5f6a952c25c3'
+revision: str = "64ad23b0cacb"
+down_revision: Union[str, Sequence[str], None] = "5f6a952c25c3"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -30,7 +31,7 @@ def upgrade() -> None:
             sa.ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE"),
             nullable=False,
         ),
-        sa.Column('medication_name', sa.Text, nullable=True),
+        sa.Column("medication_name", sa.Text, nullable=True),
         sa.Column("medication_id", sa.UUID(as_uuid=True), nullable=True),
         sa.Column("user_noted_side_effects", sa.Text, nullable=True),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], name="fk_users_user_id"),

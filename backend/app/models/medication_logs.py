@@ -5,6 +5,7 @@ from pydantic import UUID7
 import datetime
 import sqlalchemy as sa
 
+
 class MedicationLogs(SQLModel, table=True):
     __tablename__ = "medication_logs"
     id: Annotated[
@@ -30,4 +31,3 @@ class MedicationLogsWithTimestamp(MedicationLogs, table=False):
     def __init__(self, **args):
         super().__init__(**args)
         self.timestamp = datetime.datetime.fromtimestamp(self.id.time)
-

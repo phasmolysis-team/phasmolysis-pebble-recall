@@ -1,6 +1,5 @@
 from uuid import uuid7
-import datetime
-from pydantic import Field, BaseModel, UUID7
+from pydantic import BaseModel, UUID7
 import sqlalchemy as sa
 from typing import Annotated, Literal
 from sqlmodel import SQLModel
@@ -64,6 +63,7 @@ class Frequency(BaseModel):
 
     # for "3 times a day at these times"
     times_per: int
+
 
 class TMedication(SQLModel, table=True):
     __tablename__ = "medication"
