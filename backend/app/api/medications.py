@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 from app.models.medication import TMedication, FreqUnit, DosageUnit
 import datetime
@@ -16,17 +17,22 @@ from app.models.users import Users
 
 from app.core.database import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import Annotated
+from typing import Annotated, cast
 from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlmodel import select, desc
+from sqlmodel import select, desc, or_
 
 router = APIRouter()
+
+class MedicationLogsMatrixParams(BaseModel):
+    medications: list[str]
+    side_effects: str = ""
+    custom_date: datetime.datetime | None = None
 
 
 class MedicationLogsParams(BaseModel):
     medication: str
-    side_effects: str
-    custom_date: datetime.datetime | None
+    side_effects: str = ""
+    custom_date: datetime.datetime | None = None
 
 
 class TMedicationParams(BaseModel):
@@ -125,25 +131,9 @@ async def get_medication_logs_with_date(
     return logs
 
 
-@router.post(path="/medications/logs")
-async def add_medication_logs(
-    request: Request,
-    session: Annotated[AsyncSession, Depends(get_session)],
-    claims: Annotated[Claims, Depends(check_encrypted_cookie_auth)],
-    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
-    payload: MedicationLogsParams,
+async def _add_medication_logs(
+    session: AsyncSession, payload: MedicationLogsParams, user: Users
 ):
-    if not is_logged_in:
-        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
-    statement = select(Users).where(Users.email == claims.sub)
-    results = await session.exec(statement)
-    user = results.one_or_none()
-    if user is None:
-        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-
-    if user.id is None:
-        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-
     if payload.custom_date is not None:
         ts = int(payload.custom_date.timestamp() * 1000)
         id = uuid.uuid8(a=ts)
@@ -168,7 +158,7 @@ async def add_medication_logs(
             )
         log = MedicationLogs(
             id=id,
-            user_id=user.id,
+            user_id=cast(int, user.id),
             medication_id=tmedication.id,
             medication_name=tmedication.name,
             user_noted_side_effects=payload.side_effects,
@@ -180,7 +170,7 @@ async def add_medication_logs(
 
     log = MedicationLogs(
         id=id,
-        user_id=user.id,
+        user_id=cast(int, user.id),
         medication_id=None,
         medication_name=medication_t,
         user_noted_side_effects=payload.side_effects,
@@ -189,6 +179,29 @@ async def add_medication_logs(
     await session.commit()
     await session.refresh(log)
     return log
+
+
+@router.post(path="/medications/logs")
+async def add_medication_logs(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    claims: Annotated[Claims, Depends(check_encrypted_cookie_auth)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    payload: MedicationLogsParams,
+):
+    if not is_logged_in:
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+    statement = select(Users).where(Users.email == claims.sub)
+    results = await session.exec(statement)
+    user = results.one_or_none()
+    if user is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if user.id is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    log = await _add_medication_logs(session, payload, user)
+    return log
+
 
 
 @router.post(path="/medications")
@@ -222,3 +235,69 @@ async def get_medications(
     statement = select(TMedication)
     results = await session.exec(statement)
     return results.all()
+
+
+@router.post(path="/side-effects/new")
+async def add_medication_logs_matrix(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    claims: Annotated[Claims, Depends(check_encrypted_cookie_auth)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    payload: MedicationLogsMatrixParams,
+):
+    if not is_logged_in:
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+    statement = select(Users).where(Users.email == claims.sub)
+    results = await session.exec(statement)
+    user = results.one_or_none()
+    if user is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if user.id is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    tasks = []
+
+    for medication in payload.medications:
+        medication_logs_params = MedicationLogsParams(
+            medication=medication,
+            custom_date=payload.custom_date,
+            side_effects=payload.side_effects
+        )
+        task = _add_medication_logs(session, medication_logs_params, user)
+        tasks.append(task)
+
+    results = await asyncio.gather(*tasks)
+    return results
+
+@router.post(path="/side-effects/retrieve")
+async def get_medication_logs_matrix(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    claims: Annotated[Claims, Depends(check_encrypted_cookie_auth)],
+    is_logged_in: Annotated[bool, Depends(check_if_logged_in)],
+    payload: MedicationLogsMatrixParams,
+):
+    if not is_logged_in:
+        raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
+    statement = select(Users).where(Users.email == claims.sub)
+    results = await session.exec(statement)
+    user = results.one_or_none()
+    if user is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if user.id is None:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    q = []
+    for medication in payload.medications:
+        try:
+            uid = uuid.UUID(medication, version=7)
+            q.append(MedicationLogs.medication_id == uid)
+        except ValueError:
+            q.append(MedicationLogs.medication_name == medication)
+    
+    statement = select(MedicationLogs).where(or_(*q)).order_by(desc(MedicationLogs.id))
+    results = await session.exec(statement)
+    return results.all()
+
