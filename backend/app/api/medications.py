@@ -53,7 +53,11 @@ async def get_medication_logs(
     user = results.one_or_none()
     if user is None:
         raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    statement = select(MedicationLogs).where(MedicationLogs.user_id == user.id).order_by(desc(MedicationLogs.id))
+    statement = (
+        select(MedicationLogs)
+        .where(MedicationLogs.user_id == user.id)
+        .order_by(desc(MedicationLogs.id))
+    )
     results = await session.exec(statement)
     logs = results.all()
     if logs:
