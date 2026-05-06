@@ -5,6 +5,9 @@ import { ThrowHUD, PebbleTossHUD } from './pebble_toss_hud.tsx'
 import {PebbleLogListScreen} from './pebbles_log_list.tsx' 
 import { ValenceScreen } from './valence_screen.tsx' 
 import { SideEffectsJournalPopup } from "./side_effects_popup.tsx"
+import {RockComposite} from './rock_composite.tsx'
+
+
 
 interface Ripple {
   x: number
@@ -48,9 +51,18 @@ interface Stone {
 
 export function Pond() {
   const [page, setPage] = useState("pond");
+  const [hat, setHat] = useState(0);
+  const [eyes, setEyes] = useState(0);
+  const [base, setBase] = useState(0);
+  const [tint, setTint] = useState('');
   const widthRef = useRef(0)
 const heightRef = useRef(0)
   const [valence, setValence] = useState(0);
+  
+  const setTintValence = (value: string) =>
+  {
+    setTint(value)
+  }
   const canvasRef =
   useRef<HTMLCanvasElement | null>(null)
 
@@ -64,9 +76,19 @@ const heightRef = useRef(0)
 
     const receiveEnergyAndThrowRock = (energy:number ) => {
     throwStone(valence, energy)
+    
     console.log("got here: valence: " + valence + " energy: " + energy);
     setPage("pond")
     }
+    const goToValenceScreen = () => {
+      randomizeRock();
+      setPage("valence")
+    }
+  const randomizeRock = () => {
+    setHat(Math.floor(Math.random() * 4) + 1)
+     setEyes(Math.floor(Math.random() * 4) + 1)
+      setBase(Math.floor(Math.random() * 4) + 1)
+  }
 const throwStone = (
   xPercent: number,
   powerPercent: number
@@ -147,15 +169,7 @@ const skips =
     const easeOutCubic = (t: number) => {
       return 1 - Math.pow(1 - t, 3)
     }
-    /*
-  const mouse = useRef<{
-  x: number
-  power: number
-}>({
-  x: window.innerWidth / 2,
-  power: 90
-})
-  */
+
 
 const getColorFromValue = (
   value: number
@@ -290,29 +304,6 @@ height = heightRef.current
     }
 
    
-
-     
-
-
-
-    /*
-    // ---------------------------------
-    // Input
-    // ---------------------------------
-    const onMove = (e: MouseEvent) => {
-      mouse.current.x = e.clientX
-    }
-
-    const onClick = () => {
-      throwStone(
-        mouse.current.x,
-        mouse.current.power
-      )
-    }
-
-    window.addEventListener("mousemove", onMove)
-    window.addEventListener("click", onClick)
-    */
 
     // ---------------------------------
     // Water Texture
@@ -571,10 +562,10 @@ ctx.fillRect(0, 0, width, height)
     <>
     <Logo></Logo>
     {page === "pond" && (
-      <PebbleTossHUD openNewRockMenu={() => setPage("valence")} openLogList={() => setPage("log_list")} openSideEffectJournal={() => setPage("side_effect")}/>
+      <PebbleTossHUD openNewRockMenu={goToValenceScreen} openLogList={() => setPage("log_list")} openSideEffectJournal={() => setPage("side_effect")}/>
     )}
     {page === "valence" &&(
-      <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} setValenceThrow={receiveAndSetValence} goToEnergyBarScreen={() => setPage("throw")}/>
+      <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} hat={hat} eyes={eyes} base={base} setTintFromValence={setTintValence} setValenceThrow={receiveAndSetValence} goToEnergyBarScreen={() => setPage("throw")}/>
     )}
     {page === "throw" && (
       <ThrowHUD returnToPondHUD={() => setPage("pond")} receiveEnergyAndThrowRock={receiveEnergyAndThrowRock}/>

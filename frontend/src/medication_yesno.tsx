@@ -1,8 +1,10 @@
 
 import { useState } from "react";
 import sillyRockImage from './assets/rock_question.png'
+
 export function MedicationYesNoPopup() {
   const [dismissPopup, setDismissPopup] = useState(false);
+  
 
 
   function dismissAndSendResponse(val: boolean): void{

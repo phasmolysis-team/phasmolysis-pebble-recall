@@ -3,6 +3,7 @@ import iconLogo from './assets/logo.png'
 import happyIcon from './assets/happy.png'
 import sadIcon from './assets/sad.png'
 import './valence_screen.css'
+import {RockComposite} from './rock_composite.tsx'
 type RGB = {
   r: number;
   g: number;
@@ -10,16 +11,24 @@ type RGB = {
 };
 
 
+
+
 type ValenceScreenProps = {
   dismissValenceScreenAndReopenHUD: (value:string) => void;
+  hat: number;
+  eyes: number;
+  base: number;
+  setTintFromValence:(value:string) => void;
   goToEnergyBarScreen: (value:string) => void;
   setValenceThrow: (value: number) => void
 };
 
-export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarScreen, setValenceThrow}: ValenceScreenProps)
+
+
+export function ValenceScreen({dismissValenceScreenAndReopenHUD, hat, eyes, base, setTintFromValence, goToEnergyBarScreen, setValenceThrow}: ValenceScreenProps)
 {
    
-    const [horizontalValue, setHorizontalValue] = useState<number>(50);
+    const [horizontalValue, setHorizontalValue] = useState<number>(0);
      const horizontalRef = useRef<HTMLDivElement | null>(null);
 
       const gradient = [
@@ -51,6 +60,7 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
   percent = Math.max(0, Math.min(100, percent));
 
   setHorizontalValue(percent);
+  setTintFromValence(`rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`)
   };
 
   const startHorizontalDrag = (
@@ -91,11 +101,8 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
             
         <p id="valenceText">How are you feeling today?</p>
             {/* Image */}
-        <div style={styles.imageWrapper}>
-            <img
-            src={iconLogo} 
-            
-            />
+    
+            <RockComposite hat={hat} eyes={eyes} base={base} tint={`rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`}/>
 
             {/* Color Overlay */}
             <div
@@ -104,8 +111,7 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
                 background: `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`,
             }}
             />
-        </div>
-
+   
         {/* Horizontal Bar */}
         <div style={styles.horizontalSection}>
             <div
@@ -179,7 +185,7 @@ const styles: Record<string, any> = {
     justifyContent:"center",
     gap: "14px",
     width: "400px",
-  
+    zIndex: "10"
   },
 
   horizontalBar: {
@@ -191,12 +197,15 @@ const styles: Record<string, any> = {
     cursor: "pointer",
 
     touchAction: "none",
+    zIndex: "10"
   },
 
   horizontalFill: {
     height: "100%",
     outline: "2px solid black",
+    background:"transparent",
     transition: "width 0.5s ease-in-out",
+    zIndex: "10"
   },
 
   valenceBackground: {
@@ -227,7 +236,7 @@ const styles: Record<string, any> = {
   
   imageWrapper: {
     display: "flex",
-    width: "auto",
+    width: "200px",
     height: "200px",
     margin:"40px",
     borderRadius: "24px",
@@ -236,12 +245,14 @@ const styles: Record<string, any> = {
 
 
   overlay: {
-    position: "absolute",
-    height:"auto",
-    inset: 0,
-    mixBlendMode: "color",
-    opacity: 0.7,
-    pointerEvents: "none",
-    transition: "background 0.08s linear",
-  },
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  mixBlendMode: "color",
+  opacity: 0.7,
+  pointerEvents: "none",
+  transition: "background 0.08s linear",
+  zIndex: "5",
+},
 };

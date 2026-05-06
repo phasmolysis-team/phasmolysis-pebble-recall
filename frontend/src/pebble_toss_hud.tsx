@@ -189,7 +189,7 @@ function NewRockButton({openNewRockMenu = () => {}})
         style={styles.floatingButton}
         onClick={openNewRockMenu}
       ><img src={addRockIcon}
-     	 alt="Button Image" style={{width: "120px", height: "120px"}}></img>
+     	 alt="Button Image" style={{width: "120px", height: "120px", background:"transparent"}}></img>
       </button>
      )
 }
