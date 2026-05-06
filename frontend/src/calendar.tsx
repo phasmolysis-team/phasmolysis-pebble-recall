@@ -3,202 +3,181 @@ import { useMemo, useState } from "react";
 type CircleSize = "small" | "big";
 
 type DayInfo = {
-  size: CircleSize;
-  value: number;
+	size: CircleSize;
+	value: number;
 };
 
-
-
 const sampleData: Record<number, DayInfo> = {
-  2: { size: "small", value: 0.1 },
-  5: { size: "big", value: 0.9 },
-  8: { size: "small", value: 0.6 },
-  12: { size: "big", value: 0.2 },
-  16: { size: "small", value: 0.8 },
-  21: { size: "big", value: 0.45 },
-  26: { size: "small", value: 1.0 },
+	2: { size: "small", value: 0.1 },
+	5: { size: "big", value: 0.9 },
+	8: { size: "small", value: 0.6 },
+	12: { size: "big", value: 0.2 },
+	16: { size: "small", value: 0.8 },
+	21: { size: "big", value: 0.45 },
+	26: { size: "small", value: 1.0 },
 };
 
 function gradientColor(value: number): string {
-  const clamped = Math.max(0, Math.min(1, value));
+	const clamped = Math.max(0, Math.min(1, value));
 
-  const start = {
-    r: 255,
-    g: 210,
-    b: 70,
-  };
+	const start = {
+		r: 255,
+		g: 210,
+		b: 70,
+	};
 
-  const end = {
-    r: 60,
-    g: 120,
-    b: 255,
-  };
+	const end = {
+		r: 60,
+		g: 120,
+		b: 255,
+	};
 
-  const r = Math.round(start.r + (end.r - start.r) * clamped);
-  const g = Math.round(start.g + (end.g - start.g) * clamped);
-  const b = Math.round(start.b + (end.b - start.b) * clamped);
+	const r = Math.round(start.r + (end.r - start.r) * clamped);
+	const g = Math.round(start.g + (end.g - start.g) * clamped);
+	const b = Math.round(start.b + (end.b - start.b) * clamped);
 
-  return `rgb(${r}, ${g}, ${b})`;
+	return `rgb(${r}, ${g}, ${b})`;
 }
 
-export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (date: Date) => {}}) {
-  const today = useMemo(() => new Date(), []);
+export function Calendar({
+	setCalendarOpen = () => {},
+	setSelectedDay_Parent = (_date: Date) => {},
+}) {
+	const today = useMemo(() => new Date(), []);
 
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    today.getMonth()
-  );
+	const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth());
 
-  const [currentYear, setCurrentYear] = useState<number>(
-    today.getFullYear()
-  );
+	const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
 
-  function changeMonth(offset: number): void {
-    let newMonth = currentMonth + offset;
-    let newYear = currentYear;
+	function changeMonth(offset: number): void {
+		let newMonth = currentMonth + offset;
+		let newYear = currentYear;
 
-    if (newMonth < 0) {
-      newMonth = 11;
-      newYear--;
-    }
+		if (newMonth < 0) {
+			newMonth = 11;
+			newYear--;
+		}
 
-    if (newMonth > 11) {
-      newMonth = 0;
-      newYear++;
-    }
+		if (newMonth > 11) {
+			newMonth = 0;
+			newYear++;
+		}
 
-    setCurrentMonth(newMonth);
-    setCurrentYear(newYear);
-  }
+		setCurrentMonth(newMonth);
+		setCurrentYear(newYear);
+	}
 
-  function changeYear(offset: number): void {
-    setCurrentYear((prev) => prev + offset);
-  }
+	function changeYear(offset: number): void {
+		setCurrentYear((prev) => prev + offset);
+	}
 
-  function setSelectedDayAndDismissCalendar(givenDate: Date): void{
-    setSelectedDay_Parent(givenDate);
-    setCalendarOpen();
-  }
+	function setSelectedDayAndDismissCalendar(givenDate: Date): void {
+		setSelectedDay_Parent(givenDate);
+		setCalendarOpen();
+	}
 
-  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+	const firstDay = new Date(currentYear, currentMonth, 1).getDay();
 
-  const totalDays = new Date(
-    currentYear,
-    currentMonth + 1,
-    0
-  ).getDate();
+	const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  const monthLabel = new Date(
-    currentYear,
-    currentMonth
-  ).toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
+	const monthLabel = new Date(currentYear, currentMonth).toLocaleString(
+		"default",
+		{
+			month: "long",
+			year: "numeric",
+		},
+	);
 
-  const cells: React.ComponentChildren[] = [];
+	const cells: React.ReactNode[] = [];
 
-  // Leading empty cells
-  for (let i = 0; i < firstDay; i++) {
-    cells.push(
-      <div
-        className="empty-cell"
-        key={`empty-${i}`}
-      />
-    );
-  }
+	// Leading empty cells
+	for (let i = 0; i < firstDay; i++) {
+		cells.push(<div className="empty-cell" key={`empty-${i}`} />);
+	}
 
-  // Actual day cells
-  for (let day = 1; day <= totalDays; day++) {
-    const info = sampleData[day];
+	// Actual day cells
+	for (let day = 1; day <= totalDays; day++) {
+		const info = sampleData[day];
 
+		cells.push(
+			<div
+				key={day}
+				className={`day-cell`}
+				onClick={() =>
+					setSelectedDayAndDismissCalendar(
+						new Date(currentYear, currentMonth, day),
+					)
+				}
+			>
+				<div className="day-number">{day}</div>
 
-    cells.push(
-      <div
-        key={day}
-        className={`day-cell`}
-        onClick={() => setSelectedDayAndDismissCalendar(new Date(currentYear, currentMonth, day))}
-      >
-        <div className="day-number">{day}</div>
+				{info && (
+					<div
+						className={`circle ${info.size}`}
+						style={{
+							background: gradientColor(info.value),
+						}}
+					/>
+				)}
+			</div>,
+		);
+	}
 
-        {info && (
-          <div
-            className={`circle ${info.size}`}
-            style={{
-              background: gradientColor(info.value),
-            }}
-          />
-        )}
-      </div>
-    );
-  }
+	return (
+		<>
+			<style>{styles}</style>
+			<button
+				className="topRightXButton_topRight"
+				style={{ zIndex: "3" }}
+				onClick={() => setCalendarOpen()}
+			>
+				x
+			</button>
+			<div className="calendar-flex-container overlay">
+				<div className="calendar-wrapper">
+					<div className="calendar-header">
+						{/* Year controls */}
+						<div className="arrow-group">
+							<button className="arrow-btn" onClick={() => changeYear(-1)}>
+								«
+							</button>
 
-  return (
-    <>
-        <style>{styles}</style>
-        <button className="topRightXButton_topRight" style={{zIndex: "3"}} onClick={() => setCalendarOpen()}>x</button>
-        <div  className ="calendar-flex-container overlay">
-        <div className="calendar-wrapper">
-          <div className="calendar-header">
-            {/* Year controls */}
-            <div className="arrow-group">
-              <button
-                className="arrow-btn"
-                onClick={() => changeYear(-1)}
-              >
-                «
-              </button>
+							<button className="arrow-btn" onClick={() => changeMonth(-1)}>
+								‹
+							</button>
+						</div>
 
-              <button
-                className="arrow-btn"
-                onClick={() => changeMonth(-1)}
-              >
-                ‹
-              </button>
-            </div>
+						<div className="header-center">{monthLabel}</div>
 
-            <div className="header-center">
-              {monthLabel}
-            </div>
+						{/* Month controls */}
+						<div className="arrow-group">
+							<button className="arrow-btn" onClick={() => changeMonth(1)}>
+								›
+							</button>
 
-            {/* Month controls */}
-            <div className="arrow-group">
-              <button
-                className="arrow-btn"
-                onClick={() => changeMonth(1)}
-              >
-                ›
-              </button>
+							<button className="arrow-btn" onClick={() => changeYear(1)}>
+								»
+							</button>
+						</div>
+					</div>
 
-              <button
-                className="arrow-btn"
-                onClick={() => changeYear(1)}
-              >
-                »
-              </button>
-            </div>
-          </div>
+					<div className="weekdays">
+						<div className="weekday">Sun</div>
+						<div className="weekday">Mon</div>
+						<div className="weekday">Tue</div>
+						<div className="weekday">Wed</div>
+						<div className="weekday">Thu</div>
+						<div className="weekday">Fri</div>
+						<div className="weekday">Sat</div>
+					</div>
 
-          <div className="weekdays">
-            <div className="weekday">Sun</div>
-            <div className="weekday">Mon</div>
-            <div className="weekday">Tue</div>
-            <div className="weekday">Wed</div>
-            <div className="weekday">Thu</div>
-            <div className="weekday">Fri</div>
-            <div className="weekday">Sat</div>
-          </div>
-
-          {/* Only fills required rows */}
-          <div className="calendar-grid">
-            {cells}
-          </div>
-        </div>
-        </div>
-      </>
-    
-  );
+					{/* Only fills required rows */}
+					<div className="calendar-grid">{cells}</div>
+				</div>
+			</div>
+		</>
+	);
 }
-
 
 const styles = `
   * {

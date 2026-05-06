@@ -1,11 +1,10 @@
 #logDateText {
-    font-size: 32px;
-    font-weight: bold;
-    background:transparent;
-    color:white;
-    
+	font-size: 32px;
+	font-weight: bold;
+	background: transparent;
+	color: white;
 
-    @media (max-width: 760px) {
-       font-size: 25px;
-    }
+	@media (max-width: 760px) {
+		font-size: 25px;
+	}
 }

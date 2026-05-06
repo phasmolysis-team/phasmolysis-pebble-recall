@@ -1,120 +1,111 @@
-@font-face { 
-  font-family: youngseifRegular; 
-			 src: url(./assets/fonts/YoungSerif-Regular.ttf); } 
-
-
+@font-face {
+	font-family: youngseifRegular;
+	src: url(./assets/fonts/YoungSerif-Regular.ttf);
+}
 
 .decision-button {
-  margin:70px;
-  background:white;
-  color:black;
-  border:none;
-  font-family: youngseifRegular;
-  font-size:50px;
-  text-align: center;
+	margin: 70px;
+	background: white;
+	color: black;
+	border: none;
+	font-family: youngseifRegular;
+	font-size: 50px;
+	text-align: center;
 
-   box-shadow: 0 0 0 4pt black;
-  border-radius:90%;
-  width:45%;
-  cursor:pointer;
-  
-  
+	box-shadow: 0 0 0 4pt black;
+	border-radius: 90%;
+	width: 45%;
+	cursor: pointer;
 }
-
 
 .box {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5),
-  }
+	background-color: white;
+	padding: 30px;
+	border-radius: 12px;
+	text-align: center;
+	box-shadow:
+		0 0 15px rgba(0, 0, 0, 0.5),;
+}
 
 .liveMessageOverlay {
-    position: fixed;
-    width:100vw;
-    height:100vh;
-    display: flex;
-   bottom:40%;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    pointer-events: none;
-    background:transparent;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	bottom: 40%;
+	justify-content: center;
+	align-items: center;
+	z-index: 10000;
+	pointer-events: none;
+	background: transparent;
 }
 
-.liveMessageOverlay div{
-    background-color: white;
-    color: black;
-    padding: 20px 40px;
-    border-radius: 12px;
-    font-size: 18px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+.liveMessageOverlay div {
+	background-color: white;
+	color: black;
+	padding: 20px 40px;
+	border-radius: 12px;
+	font-size: 18px;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
-
 
 .overlay {
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+	background-color: rgba(0, 0, 0, 0.5);
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999;
 }
 
-.topRightXButton{
-    position:absolute;
-    top:20px;
-    right: 10%;
-    font-size : 30px;
-    color:black;
-    border:5px solid black;
-    border-radius: 100px;
-    padding:0;
-    width:60px;
-    height:60px;
-    font-weight:bold;
-    background:white;
-    cursor:pointer;
-    z-index:1;
+.topRightXButton {
+	position: absolute;
+	top: 20px;
+	right: 10%;
+	font-size: 30px;
+	color: black;
+	border: 5px solid black;
+	border-radius: 100px;
+	padding: 0;
+	width: 60px;
+	height: 60px;
+	font-weight: bold;
+	background: white;
+	cursor: pointer;
+	z-index: 1;
 
-    @media (max-width: 760px) {
-        right: 20px;
-  
-    }
+	@media (max-width: 760px) {
+		right: 20px;
+	}
 }
 
- .topRightXButton_topRight {
-    position:absolute;
-    top:20px;
-    right: 20px;
-    font-size : 30px;
-    color:black;
-    border:5px solid black;
-    border-radius: 100px;
-    padding:0;
-    width:60px;
-    height:60px;
-    font-weight:bold;
-    background:white;
-    cursor:pointer;
-    z-index:1;
-
-  }
+.topRightXButton_topRight {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 30px;
+	color: black;
+	border: 5px solid black;
+	border-radius: 100px;
+	padding: 0;
+	width: 60px;
+	height: 60px;
+	font-weight: bold;
+	background: white;
+	cursor: pointer;
+	z-index: 1;
+}
 
 #top-logo {
-  
-  position:fixed;
-  width:120px;
-  top: 30px;
-  left: 50px;
-    @media (max-width: 760px) {
-
-      width:80px;
-
-  }
+	position: fixed;
+	width: 120px;
+	top: 30px;
+	left: 50px;
+	@media (max-width: 760px) {
+		width: 80px;
+	}
 }
