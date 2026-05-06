@@ -26,6 +26,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated, Literal
 from fastapi import APIRouter, Form, Depends, HTTPException, Response, Request
 from pydantic import BaseModel
+from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlmodel import select, or_
 
 router = APIRouter()
