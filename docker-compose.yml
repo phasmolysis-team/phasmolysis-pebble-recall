@@ -37,6 +37,25 @@ services:
       postgres:
         condition: service_healthy
 
+  seed-data:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pebble-recall-seed
+    environment:
+      PG__HOST: postgres
+      PG__PORT: 5432
+      PG__USER: ${PG__USER:-postgres}
+      PG__DBNAME: ${PG__DBNAME:-pebble}
+      PG__PASSWORD: ${PG__PASSWORD}
+      PG_URL: postgresql://${PG__USER:-postgres}:${PG__PASSWORD}@postgres:5432/${PG__DBNAME:-pebble}
+    command: uv run python backend/scripts/seed_data.py
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
   app:
     build:
       context: .
