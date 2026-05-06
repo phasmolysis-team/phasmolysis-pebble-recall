@@ -65,8 +65,8 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
     <>
       <div style={styles.overlay}>
         <button class="topRightXButton" onClick={dismissScreenAndReopenHUD}>x</button>
-        <div style={styles.popup}>
-          <h1 style={styles.title}>Daily Journal</h1>
+        <div style={styles.popup} class="box">
+          <h1 style={styles.title}>Side Effects Journal</h1>
 
           {/* Date */}
           <label style={styles.label}>Select Date</label>
@@ -86,7 +86,7 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
 
           {/* Text */}
           <label style={styles.label}>
-            Journal Entry
+           List Side Effects Experienced
           </label>
 
           <textarea
@@ -102,7 +102,7 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
           />
 
           {/* Dropdown */}
-          <label style={styles.label}>Mood</label>
+          <label style={styles.label}>Medication</label>
 
           <select
             value={dropdownValue}
@@ -133,8 +133,8 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
 
       {/* Confirmation Popup */}
       {showSavedPopup && (
-        <div style={styles.confirmOverlay}>
-          <div style={styles.confirmBox}>
+        <div class="liveMessageOverlay">
+          <div>
             Saved successfully!
           </div>
         </div>
@@ -155,6 +155,7 @@ const styles: Record<string, CSSProperties> = {
     zIndex: 1000,
   },
 
+
   xButton: {
     position:"absolute",
     top:"50px",
@@ -174,13 +175,11 @@ const styles: Record<string, CSSProperties> = {
   popup: {
     width: "600px",
     maxWidth: "90%",
-    backgroundColor: "#1f1f1f",
     borderRadius: "16px",
     padding: "30px",
     display: "flex",
     flexDirection: "column",
     gap: "15px",
-    color: "white",
     boxShadow: "0 0 20px rgba(0,0,0,0.5)",
   },
 
@@ -197,17 +196,21 @@ const styles: Record<string, CSSProperties> = {
 
   input: {
     padding: "10px",
-    borderRadius: "8px",
-    border: "none",
+    background: "transparent",
+    outline: "2px solid black",
+    color: "black",
     fontSize: "16px",
+    fontFamily: "youngseifRegular"
   },
 
   textarea: {
     minHeight: "150px",
     resize: "vertical",
     padding: "10px",
-    borderRadius: "8px",
+    outline: "2px solid black",
+    background: "transparent",
     border: "none",
+    color: "black",
     fontSize: "16px",
   },
 
@@ -216,28 +219,14 @@ const styles: Record<string, CSSProperties> = {
     padding: "12px",
     border: "none",
     borderRadius: "10px",
-    backgroundColor: "#4caf50",
+    backgroundColor: "black",
+    fontFamily: "youngseifRegular",
     color: "white",
     fontSize: "16px",
     cursor: "pointer",
   },
 
-  confirmOverlay: {
-    position: "fixed",
-    inset: 0,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 2000,
-    pointerEvents: "none",
-  },
 
-  confirmBox: {
-    backgroundColor: "#333",
-    color: "white",
-    padding: "20px 40px",
-    borderRadius: "12px",
-    fontSize: "18px",
-    boxShadow: "0 0 15px rgba(0,0,0,0.4)",
-  },
+
+  
 };

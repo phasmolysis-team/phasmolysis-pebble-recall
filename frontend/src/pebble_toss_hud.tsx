@@ -3,19 +3,65 @@ import addRockIcon from './assets/add_rock_icon.png'
 import hamburgerIcon from './assets/hamburger_icon.png'
 import logsIcon from './assets/logs_icon.png'
 import exportIcon from './assets/export_icon.png'
+import rockLogIcon from './assets/rock_log.png'
 import './pebble_toss_hud.css'
 
-export function ThrowHUD({returnToPondHUD = () => {}}){
+import { LiveMessagePopup } from "./live_message_popup"
+
+type ThrowHUDProps = {
+  returnToPondHUD: () => void,
+  receiveEnergyAndThrowRock: (energy: number) => void,
+};
+
+
+export function ThrowHUD({
+  returnToPondHUD,
+  receiveEnergyAndThrowRock,
+}: ThrowHUDProps) {
+  const [verticalValue, setVerticalValue] = useState<number>(50);
+
+
+
+    
   return (
     <>
-    <button class="topRightXButton_topRight" onClick={returnToPondHUD}>x</button>
-    <EnergyBar/>
-    <ThrowRock/>
+
+      <LiveMessagePopup
+        show={true}
+        message="How energetic do you feel?"
+      />
+
+      <button
+        class="topRightXButton_topRight"
+        onClick={returnToPondHUD}
+      >
+        x
+      </button>
+
+      <EnergyBar
+        verticalValue={verticalValue}
+        setVerticalValue={setVerticalValue}
+      />
+
+      <button
+        id="throwButton"
+        class="decision-button"
+        onClick={() => receiveEnergyAndThrowRock(verticalValue)}
+      >
+        throw
+      </button>
     </>
-  )
+  );
 }
-function EnergyBar() {
-  const [verticalValue, setVerticalValue] = useState<number>(60);
+type EnergyBarProps = {
+  verticalValue: number;
+  setVerticalValue: (num: number) => void;
+};
+
+function EnergyBar({
+  verticalValue,
+  setVerticalValue,
+}: EnergyBarProps) {
    const verticalRef = useRef<HTMLDivElement | null>(null);
    const updateVertical = (clientY: number): void => {
     if (!verticalRef.current) return;
@@ -57,7 +103,7 @@ function EnergyBar() {
   };
 
   return (
-  <div style={styles.section}>
+  <div id="throw_hud_section">
         <div style={styles.energyLabel}>Energy Bar</div>
 
         <div
@@ -96,14 +142,7 @@ export function PebbleTossHUD({ openNewRockMenu, openLogList, openSideEffectJour
   );
 }
 
-function ThrowRock()
-{
-  return (
-    <>
-      <button id="throwButton" class="decision-button">throw</button>
-    </>
-  )
-}
+
 
 function HamburgerMenu({openLogList = () => {}, openSideEffectJournal = () => {}})
 {
@@ -119,15 +158,14 @@ function HamburgerMenu({openLogList = () => {}, openSideEffectJournal = () => {}
 
         {open && (
           <div style={styles.dropdown}>
-            <button onClick={openSideEffectJournal} style={styles.iconButton}>
-               <img src={logsIcon} style="width:50px; height:50px;">
-               </img>
+            <button onClick={openSideEffectJournal}  style={styles.iconButton}>
+              <img src={logsIcon} style="width:50px" />
                </button>
-            <button onClick={openLogList} >
-                  X
+            <button onClick={openLogList} style={styles.iconButton}>
+                  <img src={rockLogIcon} style="width:50px; height:50px;"/>
             </button>
             <button style={styles.iconButton}>
-                <img src={exportIcon} style="width:50px; height:50px;"></img>
+                <img src={exportIcon} style="margin-top:10px; width:50px; height:50px;"/>
             </button>
           </div>
         )}
@@ -152,17 +190,6 @@ function NewRockButton({openNewRockMenu = () => {}})
 
 const styles: Record<string, any> = {
 
-
-  section: {
-    display: "flex",
-    position:"fixed",
-
-    right: "50px",
-    top:"30%",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "14px",
-  },
 
   energyLabel: {
     fontSize: "20px",
@@ -221,6 +248,7 @@ const styles: Record<string, any> = {
     outline: "5px solid black",
     background: "white",
     cursor: "pointer",
+    zIndex:"1",
 
   },
 
@@ -232,16 +260,17 @@ const styles: Record<string, any> = {
   },
 
   dropdown: {
-    width: "80px",
-    padding: "30px 0 30px",
+    width: "auto",
+    marginTop: "-20px",
+    padding: "30px 0 50px",
     background: "white",
     borderRadius: "20px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "10px",
+    gap: "20px",
     outline: "5px solid black",
-    animation: "fadeIn 0.2s ease",
+    animation: "fadeIn 0.5s ease",
   },
 
   iconButton: {

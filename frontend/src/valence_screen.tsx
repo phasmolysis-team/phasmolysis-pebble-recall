@@ -1,5 +1,7 @@
 import { useRef, useState, useMemo} from "react";
 import iconLogo from './assets/logo.png'
+import happyIcon from './assets/happy.png'
+import sadIcon from './assets/sad.png'
 import './valence_screen.css'
 type RGB = {
   r: number;
@@ -11,18 +13,25 @@ type RGB = {
 type ValenceScreenProps = {
   dismissValenceScreenAndReopenHUD: (value:string) => void;
   goToEnergyBarScreen: (value:string) => void;
+  setValenceThrow: (value: number) => void
 };
 
-export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarScreen}: ValenceScreenProps)
+export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarScreen, setValenceThrow}: ValenceScreenProps)
 {
    
-    const [horizontalValue, setHorizontalValue] = useState<number>(0);
+    const [horizontalValue, setHorizontalValue] = useState<number>(50);
      const horizontalRef = useRef<HTMLDivElement | null>(null);
 
       const gradient = [
-    { stop: 0, color: { r: 31, g: 154, b: 194 } },     // Yellow
-    { stop: 100, color: { r: 243, g: 180, b: 56 } },   // Blue
+    { stop: 0, color: { r: 31, g: 154, b: 194 } },     // Blue
+    { stop: 100, color: { r: 243, g: 180, b: 56 } },   // Yellow
   ];
+
+  const takeValenceAndGoToEnergyBarScreen = () => {
+    setValenceThrow(horizontalValue)
+    goToEnergyBarScreen("throw")
+
+  }
 
   // -----------------------------------
   // Interpolate gradient
@@ -115,8 +124,12 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
 
             
         </div>
+        <div id="happyAndSadIcons">
+          <img style="width:100px;" src={sadIcon}/>
+          <img style="width:100px;" src={happyIcon}/>
+        </div>
 
-        <button class="decision-button" onClick={()=> goToEnergyBarScreen("throw")}>
+        <button class="decision-button" onClick={takeValenceAndGoToEnergyBarScreen}>
                 next
             </button>
 
@@ -166,6 +179,7 @@ const styles: Record<string, any> = {
     justifyContent:"center",
     gap: "14px",
     width: "400px",
+  
   },
 
   horizontalBar: {

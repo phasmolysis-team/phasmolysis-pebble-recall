@@ -8,6 +8,7 @@ type DayInfo = {
 };
 
 
+
 const sampleData: Record<number, DayInfo> = {
   2: { size: "small", value: 0.1 },
   5: { size: "big", value: 0.9 },
@@ -40,10 +41,8 @@ function gradientColor(value: number): string {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-export function Calendar() {
+export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (date: Date) => {}}) {
   const today = useMemo(() => new Date(), []);
-
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const [currentMonth, setCurrentMonth] = useState<number>(
     today.getMonth()
@@ -73,6 +72,11 @@ export function Calendar() {
 
   function changeYear(offset: number): void {
     setCurrentYear((prev) => prev + offset);
+  }
+
+  function setSelectedDayAndDismissCalendar(givenDate: Date): void{
+    setSelectedDay_Parent(givenDate);
+    setCalendarOpen();
   }
 
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
@@ -107,15 +111,12 @@ export function Calendar() {
   for (let day = 1; day <= totalDays; day++) {
     const info = sampleData[day];
 
-    const isSelected = selectedDay === day;
 
     cells.push(
       <div
         key={day}
-        class={`day-cell ${
-          isSelected ? "selected" : ""
-        }`}
-        onClick={() => setSelectedDay(day)}
+        class={`day-cell`}
+        onClick={() => setSelectedDayAndDismissCalendar(new Date(currentYear, currentMonth, day))}
       >
         <div class="day-number">{day}</div>
 
@@ -133,65 +134,68 @@ export function Calendar() {
 
   return (
     <>
-      <style>{styles}</style>
+        <style>{styles}</style>
+        <button class="topRightXButton_topRight" style="z-index: 3" onClick={() => setCalendarOpen()}>x</button>
+        <div  class ="calendar-flex-container overlay">
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            {/* Year controls */}
+            <div class="arrow-group">
+              <button
+                class="arrow-btn"
+                onClick={() => changeYear(-1)}
+              >
+                «
+              </button>
 
-      <div class="calendar-wrapper">
-        <div class="calendar-header">
-          {/* Year controls */}
-          <div class="arrow-group">
-            <button
-              class="arrow-btn"
-              onClick={() => changeYear(-1)}
-            >
-              «
-            </button>
+              <button
+                class="arrow-btn"
+                onClick={() => changeMonth(-1)}
+              >
+                ‹
+              </button>
+            </div>
 
-            <button
-              class="arrow-btn"
-              onClick={() => changeMonth(-1)}
-            >
-              ‹
-            </button>
+            <div class="header-center">
+              {monthLabel}
+            </div>
+
+            {/* Month controls */}
+            <div class="arrow-group">
+              <button
+                class="arrow-btn"
+                onClick={() => changeMonth(1)}
+              >
+                ›
+              </button>
+
+              <button
+                class="arrow-btn"
+                onClick={() => changeYear(1)}
+              >
+                »
+              </button>
+            </div>
           </div>
 
-          <div class="header-center">
-            {monthLabel}
+          <div class="weekdays">
+            <div class="weekday">Sun</div>
+            <div class="weekday">Mon</div>
+            <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div>
+            <div class="weekday">Thu</div>
+            <div class="weekday">Fri</div>
+            <div class="weekday">Sat</div>
           </div>
 
-          {/* Month controls */}
-          <div class="arrow-group">
-            <button
-              class="arrow-btn"
-              onClick={() => changeMonth(1)}
-            >
-              ›
-            </button>
-
-            <button
-              class="arrow-btn"
-              onClick={() => changeYear(1)}
-            >
-              »
-            </button>
+          {/* Only fills required rows */}
+          <div class="calendar-grid">
+            {cells}
           </div>
         </div>
-
-        <div class="weekdays">
-          <div class="weekday">Sun</div>
-          <div class="weekday">Mon</div>
-          <div class="weekday">Tue</div>
-          <div class="weekday">Wed</div>
-          <div class="weekday">Thu</div>
-          <div class="weekday">Fri</div>
-          <div class="weekday">Sat</div>
         </div>
-
-        {/* Only fills required rows */}
-        <div class="calendar-grid">
-          {cells}
-        </div>
-      </div>
-    </>
+      </>
+    
   );
 }
 
@@ -204,16 +208,35 @@ const styles = `
   body {
     margin: 0;
     background: white;
-    font-family: Arial, sans-serif;
+
+  }
+
+  .calendar-flex-container{
+    display:flex;
+    width:100%;
+    height:100%;
+    justify-content: center;
+    align-items: center;
+    position:fixed;
+    z-index: 2;
   }
 
   .calendar-wrapper {
-    position: fixed;
+    display:flex;
+    flex-direction:column;
     background: white;
-    border-radius: 14px;
+    
+    width:70%;
+    height:auto;
+    border-radius: 20px;
+
     overflow: hidden;
     box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-    z-index: 1000;
+      @media (max-width: 760px) {
+
+      width:90%;
+
+    }
   }
 
   .calendar-header {
@@ -221,8 +244,8 @@ const styles = `
     align-items: center;
     justify-content: space-between;
     padding: 14px 16px;
-    background: #1f2937;
-    color: white;
+    background: white;
+   
   }
 
   .header-center {
@@ -237,7 +260,7 @@ const styles = `
 
   .arrow-btn {
     border: none;
-    background: rgba(255,255,255,0.12);
+    background: rgba(0,0,0,1);
     color: white;
     width: 30px;
     height: 30px;
@@ -261,7 +284,9 @@ const styles = `
   .weekday {
     text-align: center;
     padding: 10px 0;
-    background: #ececec;
+    background: black;
+    color: white;
+  
     font-size: 13px;
     font-weight: bold;
   }

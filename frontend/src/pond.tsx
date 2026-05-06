@@ -44,6 +44,9 @@ interface Stone {
 
 export function Pond() {
   const [page, setPage] = useState("pond");
+  const widthRef = useRef(0)
+const heightRef = useRef(0)
+  const [valence, setValence] = useState(0);
   const canvasRef =
   useRef<HTMLCanvasElement | null>(null)
 
@@ -51,6 +54,94 @@ export function Pond() {
     const stains = useRef<Stain[]>([])
     const stones = useRef<Stone[]>([])
 
+    const receiveAndSetValence = (val:number) => {
+      setValence(val)
+    }
+
+    const receiveEnergyAndThrowRock = (energy:number ) => {
+    throwStone(valence, energy)
+    console.log("got here: valence: " + valence + " energy: " + energy);
+    setPage("pond")
+    }
+const throwStone = (
+  xPercent: number,
+  powerPercent: number
+) => {
+  const width = widthRef.current
+  const height = heightRef.current
+
+  const targetX =
+    (xPercent / 100) * width
+
+  const startX =
+    width * 0.5 +
+    (Math.random() - 0.5) * 40
+
+  const startY = height + 80
+const normalizedPower =
+  0.12 + (powerPercent / 100) * 0.88
+
+const distance =
+  normalizedPower *
+  (height )
+
+const skips =
+  Math.max(
+    1,
+    Math.floor(1 + powerPercent / 22)
+  )
+  const spacing = distance / skips
+
+  const points: Point[] = []
+
+  for (let i = 0; i < skips; i++) {
+    const progress = i / skips
+
+    points.push({
+      x:
+        lerp(startX, targetX, progress) +
+        (Math.random() - 0.5) * 25,
+
+      y:
+        startY -
+        spacing * (i + 1) +
+        (Math.random() - 0.5) * 15
+    })
+  }
+
+  stones.current.push({
+    active: true,
+
+    points,
+    current: 0,
+    progress: 0,
+
+    x: startX,
+    y: startY,
+
+    sinkX:
+      points[points.length - 1].x,
+
+    sinkY:
+      points[points.length - 1].y
+  })
+}
+ 
+    // ---------------------------------
+    // Helpers
+    // ---------------------------------
+   const lerp = (
+    a: number,
+    b: number,
+    t: number
+    ) => {
+      return a + (b - a) * t
+    }
+
+    const easeOutCubic = (t: number) => {
+      return 1 - Math.pow(1 - t, 3)
+    }
+    /*
   const mouse = useRef<{
   x: number
   power: number
@@ -58,6 +149,7 @@ export function Pond() {
   x: window.innerWidth / 2,
   power: 90
 })
+  */
 
   useEffect(() => {
     const stoneImage = new Image()
@@ -79,8 +171,11 @@ export function Pond() {
     // Resize
     // ---------------------------------
     const resize = () => {
-    width = window.innerWidth
-    height = window.innerHeight
+    widthRef.current = window.innerWidth
+heightRef.current = window.innerHeight
+
+width = widthRef.current
+height = heightRef.current
 
     canvas.width = width
     canvas.height = height
@@ -89,20 +184,7 @@ export function Pond() {
 
     window.addEventListener("resize", resize)
 
-    // ---------------------------------
-    // Helpers
-    // ---------------------------------
-   const lerp = (
-    a: number,
-    b: number,
-    t: number
-    ) => {
-      return a + (b - a) * t
-    }
-
-    const easeOutCubic = (t: number) => {
-      return 1 - Math.pow(1 - t, 3)
-    }
+    
 
     // ---------------------------------
     // Ripple
@@ -133,58 +215,13 @@ export function Pond() {
       })
     }
 
-    // ---------------------------------
-    // Throw Stone
-    // ---------------------------------
-    const throwStone = (targetX:number, power:number) => {
-      const startX =
-        width * 0.5 +
-        (Math.random() - 0.5) * 40
+   
 
-      const startY = height + 80
+     
 
-      const distance = power * 5
 
-      const skips =
-        Math.floor(3 + Math.random() * 5)
 
-      const spacing = distance / skips
-
-      const points = []
-
-      for (let i = 0; i < skips; i++) {
-        const progress = i / skips
-
-        points.push({
-          x:
-            lerp(startX, targetX, progress) +
-            (Math.random() - 0.5) * 25,
-
-          y:
-            startY -
-            spacing * (i + 1) +
-            (Math.random() - 0.5) * 15
-        })
-      }
-
-      stones.current.push({
-        active: true,
-
-        points,
-        current: 0,
-        progress: 0,
-
-        x: startX,
-        y: startY,
-
-        sinkX:
-          points[points.length - 1].x,
-
-        sinkY:
-          points[points.length - 1].y
-      })
-    }
-
+    /*
     // ---------------------------------
     // Input
     // ---------------------------------
@@ -201,6 +238,7 @@ export function Pond() {
 
     window.addEventListener("mousemove", onMove)
     window.addEventListener("click", onClick)
+    */
 
     // ---------------------------------
     // Water Texture
@@ -439,7 +477,7 @@ export function Pond() {
         "resize",
         resize
       )
-
+      /*
       window.removeEventListener(
         "mousemove",
         onMove
@@ -448,7 +486,7 @@ export function Pond() {
       window.removeEventListener(
         "click",
         onClick
-      )
+      )*/
     }
   }, [])
 
@@ -460,10 +498,10 @@ export function Pond() {
       <PebbleTossHUD openNewRockMenu={() => setPage("valence")} openLogList={() => setPage("log_list")} openSideEffectJournal={() => setPage("side_effect")}/>
     )}
     {page === "valence" &&(
-      <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} goToEnergyBarScreen={() => setPage("throw")}/>
+      <ValenceScreen dismissValenceScreenAndReopenHUD={() => setPage("pond")} setValenceThrow={receiveAndSetValence} goToEnergyBarScreen={() => setPage("throw")}/>
     )}
     {page === "throw" && (
-      <ThrowHUD returnToPondHUD={() => setPage("pond")}/>
+      <ThrowHUD returnToPondHUD={() => setPage("pond")} receiveEnergyAndThrowRock={receiveEnergyAndThrowRock}/>
     )}
      {page === "log_list" &&(
       <PebbleLogListScreen dismissPebbleLogListScreenAndShowHUD={() => setPage("pond")}/>

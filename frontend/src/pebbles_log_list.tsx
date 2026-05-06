@@ -1,6 +1,8 @@
 /** @jsxImportSource preact */
 import { useMemo, useState } from "react";
 import {Calendar} from './calendar.tsx'
+import './pebbles_log_list.css'
+import calendarIcon from './assets/calendar.png'
 
 type LogEntry = {
   id: number;
@@ -60,29 +62,36 @@ export function PebbleLogListScreen({dismissPebbleLogListScreenAndShowHUD = () =
     });
   }, [logs, selectedDate]);
 
+  const setSelectedDate_Shared = (date: Date) => {
+    setSelectedDate(formatDate(date.toString()))
+  }
   return (
    <>
+   <div class="overlay">
    {calendarOpen && (
-    <Calendar/>
+    <Calendar setCalendarOpen={() => setCalendarOpen(false)} setSelectedDay_Parent={setSelectedDate_Shared}/>
    )}
    <button class="topRightXButton_topRight" onClick={dismissPebbleLogListScreenAndShowHUD}>x</button>
-    <div style={styles.page}>
+   
+          <button onClick={()=> setCalendarOpen(true)} style = {styles.calendarButton}
+          
+            value={selectedDate}>
+              <img style="width:50px;"src={calendarIcon}/>
+            </button>
+    <div class="box" style={styles.page} >
       {/* Top Bar */}
       <div style={styles.topBar}>
         {/* Date */}
-        <div style={styles.dateText}>
+        <div id="logDateText">
           {formatDate(selectedDate)}
         </div>
 
         {/* Calendar Picker */}
 
-          <button onClick={()=> setCalendarOpen(true)} style = {styles.calendarButton}
-          
-            value={selectedDate}>
-              📅
-            </button>
       
       </div>
+
+
 
       {/* Timeline */}
       <div style={styles.timelineContainer}>
@@ -144,6 +153,7 @@ export function PebbleLogListScreen({dismissPebbleLogListScreenAndShowHUD = () =
           );
         })}
       </div>
+    </div>
     </div>
     </>
   );
@@ -226,13 +236,15 @@ const styles: Record<string, any> = {
   
   page: {
     position:"fixed",
-    width:"100%",
-    height:"100vh",
+    width:"50%",
+    height:"90%",
     background: "white",
     fontFamily: "youngseifRegular",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    padding:"0",
+  
 
     color: "black",
   },
@@ -242,16 +254,16 @@ const styles: Record<string, any> = {
   topBar: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-between",
+    background:"black",
+    color:"white",
+    justifyContent: "center",
     alignItems: "center",
     padding: "30px",
+    borderTopLeftRadius: "10px",
+    borderTopRightRadius: "10px",
     boxSizing: "border-box",
   },
 
-  dateText: {
-    fontSize: "32px",
-    fontWeight: "bold",
-  },
 
   calendarButton: {
     width: "60px",
@@ -265,8 +277,7 @@ const styles: Record<string, any> = {
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    fontSize: "28px",
-    
+
     position: "absolute",
     overflow: "hidden",
   },
