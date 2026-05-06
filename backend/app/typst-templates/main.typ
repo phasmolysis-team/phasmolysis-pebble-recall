@@ -7,5 +7,7 @@
 
 #for csvfile in csvfiles [
    #table_gen(csvfile.filepath, csvfile.title) \
+   #eval(csvfile.summary, mode: "markup") \
+
 ]
 
