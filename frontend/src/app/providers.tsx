@@ -1,8 +1,7 @@
 import { CssBaseline } from "@mui/material";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-
-const queryClient = new QueryClient();
+import { queryClient } from "../lib/react-query/query-client";
 
 type AppProvidersProps = {
 	children: ReactNode;
