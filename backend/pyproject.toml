@@ -10,6 +10,7 @@ dependencies = [
     "fastapi[standard]>=0.135.3",
     "google-genai>=1.75.0",
     "greenlet>=3.3.2",
+    "matplotlib>=3.10.9",
     "pandas>=3.0.2",
     "phonenumbers>=9.0.29",
     "pydantic>=2.12.5",
