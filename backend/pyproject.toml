@@ -24,6 +24,7 @@ dependencies = [
 dev = [
     "alembic>=1.18.4",
     "cryptography>=46.0.6",
+    "pytest>=9.0.3",
     "ruff>=0.15.12",
     "time-machine>=3.2.0",
 ]
