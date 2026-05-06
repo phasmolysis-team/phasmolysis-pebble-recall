@@ -9,7 +9,7 @@ from starlette.status import (
     HTTP_500_INTERNAL_SERVER_ERROR,
     HTTP_205_RESET_CONTENT,
 )
-from app.middlewares.auth import check_if_logged_in 
+from app.middlewares.auth import check_if_logged_in
 from app.core.security.jwt_service import Claims, JwtService, get_jwt_service
 from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
 from datetime import UTC
@@ -42,6 +42,7 @@ async def get_current_user(
     user_dict = user.model_dump()
     del user_dict["password"]
     return UserWithoutPassword(**user_dict)
+
 
 @router.delete("/users")
 async def delete_current_user(
@@ -89,6 +90,7 @@ async def delete_user_by_id(
     user_dict = user_to_delete.model_dump()
     del user_dict["password"]
     return UserWithoutPassword(**user_dict)
+
 
 @router.patch(
     "/users",
@@ -168,6 +170,7 @@ async def update_user(
     del user_dict["password"]
     model_response = UserWithoutPassword(**user_dict)
     return model_response
+
 
 @router.patch(
     "/users/{id}",
