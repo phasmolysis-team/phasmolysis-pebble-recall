@@ -157,7 +157,7 @@ async def generate_mood_logs(
 
 
 async def main():
-    pg_url = "postgresql://postgres:verysecurepassword@localhost:5432/pebble"
+    pg_url = os.environ.get("PG_URL", "postgresql://postgres:verysecurepassword@localhost:5432/pebble")
     conn = await asyncpg.connect(pg_url)
     try:
         print("Clearing existing data...")
