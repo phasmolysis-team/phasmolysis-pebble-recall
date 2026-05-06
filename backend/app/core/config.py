@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"
+    GEMINI_API_KEY: Annotated[str, Field()] = ""
 
     model_config = SettingsConfigDict(
         env_file=".env", extra="ignore", env_nested_delimiter="__"
