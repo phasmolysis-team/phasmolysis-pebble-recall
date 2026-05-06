@@ -2,12 +2,14 @@ from pydantic import Field, BaseModel, field_validator
 from typing import Annotated
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 def split_csv(v) -> set[str]:
     if isinstance(v, str):
         return set([i.strip() for i in v.split(",")])
     if isinstance(v, set):
         return v
     raise ValueError("field is not of type set or str")
+
 
 class AuthConfig(BaseModel):
     JWT_SECRET: Annotated[str, Field()] = ""
@@ -26,7 +28,7 @@ class Settings(BaseSettings):
         env_file=".env", extra="ignore", env_nested_delimiter="__"
     )
 
-    @field_validator('ORIGINS', mode='before')
+    @field_validator("ORIGINS", mode="before")
     @classmethod
     def parse_csv_origins(cls, value: str) -> set[str]:
         return split_csv(value)

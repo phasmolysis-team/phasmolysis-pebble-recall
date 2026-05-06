@@ -24,8 +24,8 @@ def upgrade() -> None:
         "mood_logs",
         sa.Column("id", sa.UUID(as_uuid=True), primary_key=True, nullable=False),
         sa.Column("user_id", sa.Integer, nullable=False),
-        sa.Column("valence", sa.Float(), server_default="0.0", nullable=False),
-        sa.Column("arousal", sa.Float(), server_default="0.0", nullable=False),
+        sa.Column("valence", sa.Float, default=0.0, nullable=False),
+        sa.Column("arousal", sa.Float, default=0.0, nullable=False),
         # Use the explicit constraint OR the inline one, but not both
         sa.ForeignKeyConstraint(
             ["user_id"],
