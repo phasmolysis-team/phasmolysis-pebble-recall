@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react"
-import stone from './assets/stone.png'
-import { Logo } from "./logo"
-import { ThrowHUD, PebbleTossHUD } from './pebble_toss_hud.tsx'
-import {PebbleLogListScreen} from './pebbles_log_list.tsx'
-import { ValenceScreen } from './valence_screen.tsx'
+import { useState, useEffect, useRef } from "react" 
+import stone from './assets/stone.png' 
+import { Logo } from "./logo" 
+import { ThrowHUD, PebbleTossHUD } from './pebble_toss_hud.tsx' 
+import {PebbleLogListScreen} from './pebbles_log_list.tsx' 
+import { ValenceScreen } from './valence_screen.tsx' 
 import { SideEffectsJournalPopup } from "./side_effects_popup.tsx"
-
 
 interface Ripple {
   x: number
@@ -13,13 +12,16 @@ interface Ripple {
   radius: number
   alpha: number
   growth: number
-}
 
+  color: string
+}
 interface Stain {
   x: number
   y: number
   radius: number
   alpha: number
+
+  color: string
 }
 
 interface Point {
@@ -40,6 +42,8 @@ interface Stone {
 
   sinkX: number
   sinkY: number
+
+  value: number
 }
 
 export function Pond() {
@@ -123,7 +127,9 @@ const skips =
       points[points.length - 1].x,
 
     sinkY:
-      points[points.length - 1].y
+      points[points.length - 1].y,
+
+      value:valence,
   })
 }
  
@@ -150,6 +156,67 @@ const skips =
   power: 90
 })
   */
+
+const getColorFromValue = (
+  value: number
+) => {
+  const gradient = [
+    {
+      stop: 0,
+      color: {
+        r: 31,
+        g: 154,
+        b: 194
+      }
+    },
+
+    {
+      stop: 100,
+      color: {
+        r: 243,
+        g: 180,
+        b: 56
+      }
+    }
+  ]
+
+  for (
+    let i = 0;
+    i < gradient.length - 1;
+    i++
+  ) {
+    const a = gradient[i]
+    const b = gradient[i + 1]
+
+    if (
+      value >= a.stop &&
+      value <= b.stop
+    ) {
+      const t =
+        (value - a.stop) /
+        (b.stop - a.stop)
+
+      const r = Math.round(
+        a.color.r +
+          (b.color.r - a.color.r) * t
+      )
+
+      const g = Math.round(
+        a.color.g +
+          (b.color.g - a.color.g) * t
+      )
+
+      const blue = Math.round(
+        a.color.b +
+          (b.color.b - a.color.b) * t
+      )
+
+      return `rgb(${r}, ${g}, ${blue})`
+    }
+  }
+
+  return "white"
+}
 
   useEffect(() => {
     const stoneImage = new Image()
@@ -190,28 +257,35 @@ height = heightRef.current
     // Ripple
     // ---------------------------------
     const createRipple = (
-    x: number,
-    y: number,
-    size: number = 1
-    ) => {
+  x: number,
+  y: number,
+  value: number,
+  size: number = 10
+) => {
       ripples.current.push({
-        x,
-        y,
-        radius: 5,
-        alpha: 0.2,
-        growth: 0.7 * size
-      })
-    }
+  x,
+  y,
+  radius: 5,
+  alpha: 0.7,
+  growth: 0.7 * size,
 
+  color: getColorFromValue(value)
+})
+}
     // ---------------------------------
     // Dye Stain
     // ---------------------------------
-    const createStain = (x:number, y:number) => {
+    const createStain = (
+  x:number,
+  y:number,
+  value:number
+) => {
       stains.current.push({
         x,
         y,
         radius: 20 + Math.random() * 30,
-        alpha: 0.04
+        alpha: 0.4,
+        color: getColorFromValue(value)
       })
     }
 
@@ -247,10 +321,13 @@ height = heightRef.current
 
     const drawWater = () => {
       ctx.fillStyle = "white"
+ctx.fillRect(0, 0, width, height)
+      
       ctx.fillRect(0, 0, width, height)
 
       ctx.strokeStyle = "black"
       ctx.lineWidth = 1
+      
 
       // subtle moving contour lines
       for (let row = 0; row < height; row += 28) {
@@ -298,39 +375,39 @@ height = heightRef.current
       // ---------------------------------
       if (Math.random() < 0.02) {
         createRipple(
-          Math.random() * width,
-          Math.random() * height,
-          0.5
-        )
+  Math.random() * width,
+  Math.random() * height,
+  50,
+  3
+)
       }
 
       // ---------------------------------
       // Stains
       // ---------------------------------
       for (const stain of stains.current) {
-        ctx.save()
+  ctx.save()
 
-        ctx.globalAlpha = stain.alpha
+  ctx.globalAlpha = stain.alpha
 
-        ctx.beginPath()
+  ctx.fillStyle = stain.color
+  ctx.shadowColor = stain.color
+  ctx.shadowBlur = 25
 
-        ctx.arc(
-          stain.x,
-          stain.y,
-          stain.radius,
-          0,
-          Math.PI * 2
-        )
+  ctx.beginPath()
 
-        ctx.fillStyle = "black"
+  ctx.arc(
+    stain.x,
+    stain.y,
+    stain.radius,
+    0,
+    Math.PI * 2
+  )
 
-        ctx.shadowBlur = 30
-        ctx.shadowColor = "black"
+  ctx.fill()
 
-        ctx.fill()
-
-        ctx.restore()
-      }
+  ctx.restore()
+}
 
       // ---------------------------------
       // Ripples
@@ -358,8 +435,10 @@ height = heightRef.current
           Math.PI * 2
         )
 
-        ctx.strokeStyle = "black"
+        ctx.strokeStyle = ripple.color
         ctx.lineWidth = 1
+
+
 
         ctx.stroke()
 
@@ -436,12 +515,17 @@ height = heightRef.current
 
         // trail ripple
         if (Math.random() < 0.25) {
-          createRipple(x, y, 0.4)
+          createRipple(
+  x,
+  y,
+  stone.value,
+  4
+)
         }
 
         // impact
         if (stone.progress >= 1) {
-          createRipple(target.x, target.y, 1.5)
+          createRipple(target.x, target.y, 5)
 
           stone.current++
           stone.progress = 0
@@ -460,9 +544,10 @@ height = heightRef.current
             )
 
             createStain(
-              stone.sinkX,
-              stone.sinkY
-            )
+  stone.sinkX,
+  stone.sinkY,
+  stone.value
+)
           }
         }
       }
@@ -477,16 +562,7 @@ height = heightRef.current
         "resize",
         resize
       )
-      /*
-      window.removeEventListener(
-        "mousemove",
-        onMove
-      )
-
-      window.removeEventListener(
-        "click",
-        onClick
-      )*/
+      
     }
   }, [])
 
@@ -540,21 +616,3 @@ height = heightRef.current
     </>
   )
 }
-
- /*
-        <div>Power</div>
-
-        <input
-          type="range"
-          min="20"
-          max="180"
-          defaultValue="90"
-          onInput={(
-            e: Event & {
-                currentTarget: HTMLInputElement
-            }
-            ) => {
-           mouse.current.power =
-        Number(e.currentTarget.value)
-          }}
-        />*/
