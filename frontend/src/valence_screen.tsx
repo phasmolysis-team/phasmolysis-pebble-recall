@@ -87,7 +87,7 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
     <div id="valenceBackground" style={styles.valenceBackground}>
         
         <div style={styles.valenceScreen}>
-            <button class="topRightXButton" onClick={() => dismissValenceScreenAndReopenHUD("pond")}>x</button>
+            <button className="topRightXButton" onClick={() => dismissValenceScreenAndReopenHUD("pond")}>x</button>
             
         <p id="valenceText">How are you feeling today?</p>
             {/* Image */}
@@ -125,11 +125,11 @@ export function ValenceScreen({dismissValenceScreenAndReopenHUD, goToEnergyBarSc
             
         </div>
         <div id="happyAndSadIcons">
-          <img style="width:100px;" src={sadIcon}/>
-          <img style="width:100px;" src={happyIcon}/>
+          <img style={{width:"100px"}} src={sadIcon}/>
+          <img style={{width:"100px"}} src={happyIcon}/>
         </div>
 
-        <button class="decision-button" onClick={takeValenceAndGoToEnergyBarScreen}>
+        <button className="decision-button" onClick={takeValenceAndGoToEnergyBarScreen}>
                 next
             </button>
 

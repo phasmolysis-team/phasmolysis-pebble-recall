@@ -64,8 +64,8 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
   return (
     <>
       <div style={styles.overlay}>
-        <button class="topRightXButton" onClick={dismissScreenAndReopenHUD}>x</button>
-        <div style={styles.popup} class="box">
+        <button className="topRightXButton" onClick={dismissScreenAndReopenHUD}>x</button>
+        <div style={styles.popup} className="box">
           <h1 style={styles.title}>Side Effects Journal</h1>
 
           {/* Date */}
@@ -133,7 +133,7 @@ export function SideEffectsJournalPopup({dismissScreenAndReopenHUD = () => {}}) 
 
       {/* Confirmation Popup */}
       {showSavedPopup && (
-        <div class="liveMessageOverlay">
+        <div className="liveMessageOverlay">
           <div>
             Saved successfully!
           </div>

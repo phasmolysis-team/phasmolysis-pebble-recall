@@ -1,4 +1,4 @@
-/** @jsxImportSource preact */
+
 import { useMemo, useState } from "react";
 import {Calendar} from './calendar.tsx'
 import './pebbles_log_list.css'
@@ -66,19 +66,18 @@ export function PebbleLogListScreen({dismissPebbleLogListScreenAndShowHUD = () =
     setSelectedDate(formatDate(date.toString()))
   }
   return (
-   <>
-   <div class="overlay">
+  <div className="overlay">
    {calendarOpen && (
     <Calendar setCalendarOpen={() => setCalendarOpen(false)} setSelectedDay_Parent={setSelectedDate_Shared}/>
    )}
-   <button class="topRightXButton_topRight" onClick={dismissPebbleLogListScreenAndShowHUD}>x</button>
+   <button className="topRightXButton_topRight" onClick={dismissPebbleLogListScreenAndShowHUD}>x</button>
    
           <button onClick={()=> setCalendarOpen(true)} style = {styles.calendarButton}
           
             value={selectedDate}>
-              <img style="width:50px;"src={calendarIcon}/>
+              <img style={{width:"50px"}} src={calendarIcon}/>
             </button>
-    <div class="box" style={styles.page} >
+    <div className="box" style={styles.page} >
       {/* Top Bar */}
       <div style={styles.topBar}>
         {/* Date */}
@@ -155,8 +154,8 @@ export function PebbleLogListScreen({dismissPebbleLogListScreenAndShowHUD = () =
       </div>
     </div>
     </div>
-    </>
   );
+  
 }
 
 // -----------------------------------

@@ -4,12 +4,19 @@ from typing import Annotated, Literal, List
 
 from sqlmodel import SQLModel, Field, Column
 from pydantic import EmailStr, BaseModel
+from pydantic_extra_types.phone_numbers import PhoneNumber
+
+
+class AllPhone(PhoneNumber):
+    default_region_code = "PH"
+    supported_regions = []
+    phone_format = "INTERNATIONAL"
 
 
 class BaseUsers(SQLModel, table=False):
     username: str | None = None
     email: EmailStr
-    contact_number: str
+    contact_number: AllPhone
     professional_license_id: str | None = None
     password: str
 

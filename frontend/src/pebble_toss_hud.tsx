@@ -4,6 +4,8 @@ import hamburgerIcon from './assets/hamburger_icon.png'
 import logsIcon from './assets/logs_icon.png'
 import exportIcon from './assets/export_icon.png'
 import rockLogIcon from './assets/rock_log.png'
+
+
 import './pebble_toss_hud.css'
 
 import { LiveMessagePopup } from "./live_message_popup"
@@ -32,7 +34,7 @@ export function ThrowHUD({
       />
 
       <button
-        class="topRightXButton_topRight"
+        className="topRightXButton_topRight"
         onClick={returnToPondHUD}
       >
         x
@@ -45,7 +47,7 @@ export function ThrowHUD({
 
       <button
         id="throwButton"
-        class="decision-button"
+        className="decision-button"
         onClick={() => receiveEnergyAndThrowRock(verticalValue)}
       >
         throw
@@ -73,45 +75,51 @@ function EnergyBar({
 
     setVerticalValue(percent);
   };
-  const startVerticalDrag = (
-    e: MouseEvent | TouchEvent
+const startVerticalDrag = (
+  e: globalThis.MouseEvent | globalThis.TouchEvent
+): void => {
+  e.preventDefault();
+
+  const move = (
+    event: globalThis.MouseEvent | globalThis.TouchEvent
   ): void => {
-    e.preventDefault();
+    const clientY =
+      "touches" in event
+        ? event.touches[0].clientY
+        : event.clientY;
 
-    const move = (event: MouseEvent | TouchEvent): void => {
-      const clientY =
-        "touches" in event
-          ? event.touches[0].clientY
-          : event.clientY;
-
-      updateVertical(clientY);
-    };
-
-    const stop = (): void => {
-      window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", stop);
-      window.removeEventListener("touchmove", move);
-      window.removeEventListener("touchend", stop);
-    };
-
-    window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", stop);
-    window.addEventListener("touchmove", move);
-    window.addEventListener("touchend", stop);
-
-    move(e);
+    updateVertical(clientY);
   };
+
+  const stop = (): void => {
+    window.removeEventListener("mousemove", move);
+    window.removeEventListener("mouseup", stop);
+    window.removeEventListener("touchmove", move);
+    window.removeEventListener("touchend", stop);
+  };
+
+  window.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", stop);
+  window.addEventListener("touchmove", move);
+  window.addEventListener("touchend", stop);
+
+  const initialClientY =
+  "touches" in e
+    ? e.touches[0].clientY
+    : e.clientY;
+
+updateVertical(initialClientY);
+};
 
   return (
   <div id="throw_hud_section">
         <div style={styles.energyLabel}>Energy Bar</div>
 
-        <div
-          ref={verticalRef}
-          style={styles.verticalBar}
-          onMouseDown={(e) => startVerticalDrag(e as MouseEvent)}
-          onTouchStart={(e) => startVerticalDrag(e as TouchEvent)}
-        >
+                  <div
+            ref={verticalRef}
+            style={styles.verticalBar}
+            onMouseDown={(e) => startVerticalDrag(e.nativeEvent)}
+            onTouchStart={(e) => startVerticalDrag(e.nativeEvent)}>
           <div
             style={{
               ...styles.verticalFill,
@@ -153,19 +161,19 @@ function HamburgerMenu({openLogList = () => {}, openSideEffectJournal = () => {}
           style={styles.hamburgerButton}
           onClick={() => setOpen(!open)}
         >
-          <img src={hamburgerIcon} style="width:60px; height:60px;"></img>
+          <img src={hamburgerIcon} style={{width:"60px", height:"60px"}}></img>
         </button>
 
         {open && (
           <div style={styles.dropdown}>
             <button onClick={openSideEffectJournal}  style={styles.iconButton}>
-              <img src={logsIcon} style="width:50px" />
+              <img src={logsIcon} style={{width:"50px"}} />
                </button>
             <button onClick={openLogList} style={styles.iconButton}>
-                  <img src={rockLogIcon} style="width:50px; height:50px;"/>
+                  <img src={rockLogIcon} style={{width:"50px", height:"50px"}}/>
             </button>
             <button style={styles.iconButton}>
-                <img src={exportIcon} style="margin-top:10px; width:50px; height:50px;"/>
+                <img src={exportIcon} style={{marginTop:"10px", width:"50px", height:"50px"}}/>
             </button>
           </div>
         )}
@@ -181,7 +189,7 @@ function NewRockButton({openNewRockMenu = () => {}})
         style={styles.floatingButton}
         onClick={openNewRockMenu}
       ><img src={addRockIcon}
-     	 alt="Button Image" style="width: 120px; height: 120px;"></img>
+     	 alt="Button Image" style={{width: "120px", height: "120px"}}></img>
       </button>
      )
 }

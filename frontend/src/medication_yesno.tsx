@@ -1,5 +1,5 @@
 
-import { useState } from "preact/hooks";
+import { useState } from "react";
 import sillyRockImage from './assets/rock_question.png'
 export function MedicationYesNoPopup() {
   const [dismissPopup, setDismissPopup] = useState(false);
@@ -12,9 +12,9 @@ export function MedicationYesNoPopup() {
 
   return <>
   {!dismissPopup && (
-    <div class="overlay" >
-      <div class="box">
-        <img style="height:300px;" src={sillyRockImage}/>
+    <div className="overlay" >
+      <div className="box">
+        <img style={{height:"300px"}} src={sillyRockImage}/>
         <h2 style={styles.text}>Have you taken your medication?</h2>
         
 

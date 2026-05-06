@@ -1,6 +1,14 @@
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, field_validator
 from typing import Annotated
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def split_csv(v) -> set[str]:
+    if isinstance(v, str):
+        return set([i.strip() for i in v.split(",")])
+    if isinstance(v, set):
+        return v
+    raise ValueError("field is not of type set or str")
 
 
 class AuthConfig(BaseModel):
@@ -11,7 +19,7 @@ class AuthConfig(BaseModel):
 class Settings(BaseSettings):
     AUTH: Annotated[AuthConfig, Field()] = AuthConfig()
     PG_URL: Annotated[str, Field()] = ""
-    ORIGINS: Annotated[set[str], Field()] = set()
+    ORIGINS: Annotated[str | set[str], Field()] = set()
     API_ROOT: Annotated[str, Field()] = "/api"
     PORT: Annotated[int, Field()] = 8080
     HOST: Annotated[str, Field()] = "localhost"
@@ -19,6 +27,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", extra="ignore", env_nested_delimiter="__"
     )
+
+    @field_validator("ORIGINS", mode="before")
+    @classmethod
+    def parse_csv_origins(cls, value: str) -> set[str]:
+        return split_csv(value)
 
 
 settings = Settings()

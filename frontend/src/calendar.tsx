@@ -1,4 +1,4 @@
-import { useMemo, useState } from "preact/hooks";
+import { useMemo, useState } from "react";
 
 type CircleSize = "small" | "big";
 
@@ -95,13 +95,13 @@ export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (d
     year: "numeric",
   });
 
-  const cells: preact.ComponentChildren[] = [];
+  const cells: React.ComponentChildren[] = [];
 
   // Leading empty cells
   for (let i = 0; i < firstDay; i++) {
     cells.push(
       <div
-        class="empty-cell"
+        className="empty-cell"
         key={`empty-${i}`}
       />
     );
@@ -115,14 +115,14 @@ export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (d
     cells.push(
       <div
         key={day}
-        class={`day-cell`}
+        className={`day-cell`}
         onClick={() => setSelectedDayAndDismissCalendar(new Date(currentYear, currentMonth, day))}
       >
-        <div class="day-number">{day}</div>
+        <div className="day-number">{day}</div>
 
         {info && (
           <div
-            class={`circle ${info.size}`}
+            className={`circle ${info.size}`}
             style={{
               background: gradientColor(info.value),
             }}
@@ -135,42 +135,42 @@ export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (d
   return (
     <>
         <style>{styles}</style>
-        <button class="topRightXButton_topRight" style="z-index: 3" onClick={() => setCalendarOpen()}>x</button>
-        <div  class ="calendar-flex-container overlay">
-        <div class="calendar-wrapper">
-          <div class="calendar-header">
+        <button className="topRightXButton_topRight" style={{zIndex: "3"}} onClick={() => setCalendarOpen()}>x</button>
+        <div  className ="calendar-flex-container overlay">
+        <div className="calendar-wrapper">
+          <div className="calendar-header">
             {/* Year controls */}
-            <div class="arrow-group">
+            <div className="arrow-group">
               <button
-                class="arrow-btn"
+                className="arrow-btn"
                 onClick={() => changeYear(-1)}
               >
                 «
               </button>
 
               <button
-                class="arrow-btn"
+                className="arrow-btn"
                 onClick={() => changeMonth(-1)}
               >
                 ‹
               </button>
             </div>
 
-            <div class="header-center">
+            <div className="header-center">
               {monthLabel}
             </div>
 
             {/* Month controls */}
-            <div class="arrow-group">
+            <div className="arrow-group">
               <button
-                class="arrow-btn"
+                className="arrow-btn"
                 onClick={() => changeMonth(1)}
               >
                 ›
               </button>
 
               <button
-                class="arrow-btn"
+                className="arrow-btn"
                 onClick={() => changeYear(1)}
               >
                 »
@@ -178,18 +178,18 @@ export function Calendar({setCalendarOpen = () => {}, setSelectedDay_Parent = (d
             </div>
           </div>
 
-          <div class="weekdays">
-            <div class="weekday">Sun</div>
-            <div class="weekday">Mon</div>
-            <div class="weekday">Tue</div>
-            <div class="weekday">Wed</div>
-            <div class="weekday">Thu</div>
-            <div class="weekday">Fri</div>
-            <div class="weekday">Sat</div>
+          <div className="weekdays">
+            <div className="weekday">Sun</div>
+            <div className="weekday">Mon</div>
+            <div className="weekday">Tue</div>
+            <div className="weekday">Wed</div>
+            <div className="weekday">Thu</div>
+            <div className="weekday">Fri</div>
+            <div className="weekday">Sat</div>
           </div>
 
           {/* Only fills required rows */}
-          <div class="calendar-grid">
+          <div className="calendar-grid">
             {cells}
           </div>
         </div>
