@@ -1,10 +1,10 @@
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useRef, useState } from "react";
-import addRockIcon from "./assets/add_rock_icon-144w.webp";
-import exportIcon from "./assets/export_icon-96w.webp";
-import hamburgerIcon from "./assets/hamburger_icon-96w.webp";
-import logsIcon from "./assets/logs_icon-96w.webp";
-import rockLogIcon from "./assets/rock_log-96w.webp";
+import addRockIcon from "./assets/add_rock_icon.png";
+import exportIcon from "./assets/export_icon.png";
+import hamburgerIcon from "./assets/hamburger_icon.png";
+import logsIcon from "./assets/logs_icon.png";
+import rockLogIcon from "./assets/rock_log.png";
+import LogoutIcon from "./assets/logout.png";
 
 import "./pebble_toss_hud.css";
 
@@ -210,7 +210,7 @@ function HamburgerMenu({
 					</button>
 					<form action="/api/auth/logout" method="GET">
 						<button aria-label="logout" type="submit" style={styles.iconButton}>
-							<LogoutIcon fontSize="large" />
+							<img style={{width: "60px", height:"60px", marginTop:"20px"}} src={LogoutIcon}/>
 						</button>
 					</form>
 				</div>
