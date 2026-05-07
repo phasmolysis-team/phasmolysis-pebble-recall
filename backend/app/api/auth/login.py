@@ -9,12 +9,12 @@ from starlette.status import (
     HTTP_200_OK,
     HTTP_409_CONFLICT,
     HTTP_201_CREATED,
-    HTTP_406_NOT_ACCEPTABLE, HTTP_307_TEMPORARY_REDIRECT, HTTP_301_MOVED_PERMANENTLY,
+    HTTP_406_NOT_ACCEPTABLE, HTTP_301_MOVED_PERMANENTLY,
 )
 from cryptography.exceptions import InvalidKey
 from app.core.security.kdf_pass import get_kdf
 from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
-from app.models.users import Users, UserWithoutPassword, BaseUsers
+from app.models.users import Users, BaseUsers
 
 from app.core.database import get_session
 from app.schemas.cookies import (
@@ -25,7 +25,6 @@ from app.schemas.cookies import (
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated, Literal
 from fastapi import APIRouter, Form, Depends, HTTPException, Response, Request
-from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from sqlmodel import select, or_
 

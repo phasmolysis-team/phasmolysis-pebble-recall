@@ -19,7 +19,6 @@ from starlette.status import (
 from app.models.users import Users
 
 import numpy as np
-import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -30,7 +29,7 @@ from app.core.database import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated, Literal
 from fastapi import APIRouter, Request, Depends, HTTPException, Response, Form
-from sqlmodel import select, desc
+from sqlmodel import select
 
 router = APIRouter()
 
