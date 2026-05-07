@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-import asyncpg
+import asyncpg # type: ignore[import-untyped]
 from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
 from faker import Faker
 
@@ -50,7 +50,7 @@ def hash_password(password: str) -> str:
 
 
 def make_uuid7_with_ts(ts_ms: int) -> uuid.UUID:
-    return uuid.UUID(str(uuid.uuid8(a=ts_ms)), version=7)
+    return uuid.UUID(str(uuid.uuid8(a=ts_ms)), version=7) # type: ignore[attr-defined]
 
 
 def random_log_ts_ms() -> int:
@@ -101,7 +101,7 @@ async def generate_medication_logs(
     for user_id in user_ids:
         for _ in range(logs_per_user):
             medication_name = random.choice(MEDICATION_NAMES)
-            medication_id = uuid.uuid7()
+            medication_id = uuid.uuid7() # type: ignore[attr-defined]
             side_effects = random.choice(SIDE_EFFECTS)
             log_id = make_uuid7_with_ts(random_log_ts_ms())
 
