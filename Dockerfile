@@ -20,6 +20,8 @@ RUN apk add --no-cache \
     rust \
     openssl-dev \
     perl \
+    clang \
+    meson \
     make
 
 # Install uv
@@ -36,6 +38,7 @@ COPY backend/ ./
 
 # Copy built frontend static files
 COPY --from=frontend-builder /app/frontend/dist ./frontend-dist
+COPY --from=frontend-builder /app/frontend/src/assets/* ./frontend-dist/assets/
 
 # Expose backend port
 EXPOSE 8080
