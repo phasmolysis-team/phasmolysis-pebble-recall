@@ -136,11 +136,19 @@ Built with care, imperfect by necessity, and dedicated to everyone who has ever 
 
 This project started as a dream — my dream — born out of pain I didn't fully know how to name yet. And my groupmates, without hesitation, showed up for it. For me.
 
-**uncomfyhalomacro, koi, main character** — you didn't have to go along with my whimsy. you didn't have to take my half-formed ideas and sit with me in the mess of them. but you did. you showed up, you stayed, and you helped turn something deeply personal into something real and tangible and maybe, hopefully, useful to someone out there who is hurting the way I hurt.
+**uncomfyhalomacro, koi, main character** — you didn't have to go along with my whimsy. You didn't have to take my half-formed ideas and sit with me in the mess of them. But you did. You showed up, you stayed, and you helped turn something deeply personal into something real and tangible and maybe, hopefully, useful to someone out there who is hurting the way I hurt.
 
 I don't take that lightly. I don't think I ever will.
 
 Thank you for making my dream come true. This one's ours. :3
+
+And — congratulations. In advance, and also already.
+ 
+Out of 140+ teams that joined this hackathon, we were the only ones who tried to tackle the invisible hurt. The kind of pain that doesn't show up on an X-ray, that gets dismissed in waiting rooms, that gets lost in the eight months between appointments. We saw it. We built for it. We showed up for the people that the system forgot to show up for.
+ 
+Whether or not we take home the cash prize — we've already won something that can't be handed out at a ceremony. And you've won over my heart.
+ 
+This one counts. :3
 
 ## Initial setup
 
