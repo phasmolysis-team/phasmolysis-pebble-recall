@@ -196,7 +196,7 @@ export function Calendar({
 
 	useEffect(() => {
 		changeMonth(0);
-	}, [currentYear]);
+	}, [currentYear, setSelectedDay_Parent, setCalendarOpen]);
 
 	// Leading empty cells
 	return (
