@@ -7,6 +7,10 @@ COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 
 COPY frontend/ .
+
+# Copy assets to public folder so the build tool includes them automatically
+RUN mkdir -p public/assets && cp -r src/assets/* public/assets/
+
 RUN npm run build
 
 # Stage 2: Final image with backend + frontend static files
@@ -37,12 +41,11 @@ RUN uv sync --frozen --no-dev
 COPY backend/ ./
 
 # Copy built frontend static files
+# Everything (including those assets) should now be inside /dist
 COPY --from=frontend-builder /app/frontend/dist ./frontend-dist
-COPY --from=frontend-builder /app/frontend/src/assets/* ./frontend-dist/assets/
 
 # Expose backend port
 EXPOSE 8080
 
-# Run backend (uvicorn will serve the FastAPI app)
-# Set HOST=0.0.0.0 for container access
+# Run backend
 CMD ["uv", "run", "--no-dev", "-m", "app"]
