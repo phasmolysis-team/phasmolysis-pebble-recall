@@ -136,7 +136,7 @@ export function PebbleLogListScreen({
 							},
 						]);
 
-						const size = 10 + Math.abs(log.arousal) * 9 * 1.67;
+						const size = 10 + Math.abs(log.arousal) * 0.85;
 						console.log("daylog", date, log.valence, log.arousal);
 
 						return (
