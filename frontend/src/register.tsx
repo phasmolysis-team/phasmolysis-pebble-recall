@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { CSSProperties} from "react";
 
 import logoIcon from "./assets/logo.png";
+import bg from "./assets/bg.png"
 
 type LoginErrors = {
 	username?: string;
@@ -264,6 +265,8 @@ const styles: Record<string, CSSProperties> = {
 		justifyContent: "center",
 		alignItems: "center",
 		zIndex: 1000,
+   backgroundImage: `url(${bg})`,
+
 	},
 
 	popup: {
