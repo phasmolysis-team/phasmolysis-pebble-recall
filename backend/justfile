@@ -1,6 +1,8 @@
 set dotenv-load := true
 set shell := ["bash", "-cu"]
 
+populate:
+	uv run ./scripts/seed_data.py
 serve:
 	uv run -m app
 
