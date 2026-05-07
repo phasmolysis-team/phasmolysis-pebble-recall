@@ -8,7 +8,7 @@ from typing import Annotated
 
 # NOTE: A mood is just a wrapper for emotions
 class MoodLogs(SQLModel, table=True):
-    __tablename__ = "mood_logs"
+    __tablename__ = "mood_logs" # type: ignore[assignment]
     id: Annotated[
         UUID7,
         Field(

@@ -7,7 +7,7 @@ import sqlalchemy as sa
 
 
 class MedicationLogs(SQLModel, table=True):
-    __tablename__ = "medication_logs"
+    __tablename__ = "medication_logs" # type: ignore[assignment]
     id: Annotated[
         UUID7,
         Field(

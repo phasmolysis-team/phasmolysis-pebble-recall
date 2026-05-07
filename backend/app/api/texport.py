@@ -164,7 +164,8 @@ def process_logs_to_typst(csv_path, start_date=None, end_date=None):
     """
 
     plot_path = None
-    plot_tmp_close = lambda: None
+    def plot_tmp_close():
+        return None
 
     if 'valence' in df.columns and 'arousal' in df.columns:
         typst_content += f"\n    - *Average Valence:* {df['valence'].mean():.2f}"
@@ -221,7 +222,7 @@ def get_u7_bound(dt: datetime.datetime | None) -> str | None:
     """Helper to convert datetime to a sortable UUID string."""
     if dt is None:
         return None
-    return str(uuid.UUID(str(uuid.uuid8(a=int(dt.timestamp() * 1000))), version=7))
+    return str(uuid.UUID(str(uuid.uuid8(a=int(dt.timestamp() * 1000))), version=7)) # type: ignore[attr-defined]
 
 
 def uuid7_to_datetime(uuid_val) -> datetime.datetime | None:

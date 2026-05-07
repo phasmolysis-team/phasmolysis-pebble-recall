@@ -7,6 +7,18 @@ from typing import Annotated
 from fastapi import Request, Depends, HTTPException
 
 
+def get_session_cookie(
+    request: Request,
+):
+    return request.cookies.get("session")
+
+
+def check_if_logged_in(
+    request: Request,
+):
+    return request.cookies.get("session") is not None
+
+
 async def check_encrypted_cookie_auth(
     request: Request,
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -24,14 +36,3 @@ async def check_encrypted_cookie_auth(
     except BaseException:
         raise HTTPException(status_code=HTTP_401_UNAUTHORIZED)
 
-
-def get_session_cookie(
-    request: Request,
-):
-    return request.cookies.get("session")
-
-
-def check_if_logged_in(
-    request: Request,
-):
-    return request.cookies.get("session") is not None

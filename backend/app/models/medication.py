@@ -1,4 +1,4 @@
-from uuid import uuid7
+from uuid import uuid7 # type: ignore[attr-defined]
 from pydantic import BaseModel, UUID7
 import sqlalchemy as sa
 from typing import Annotated, Literal
@@ -66,7 +66,7 @@ class Frequency(BaseModel):
 
 
 class TMedication(SQLModel, table=True):
-    __tablename__ = "medication"
+    __tablename__ = "medication" # type: ignore[assignment]
     id: Annotated[
         UUID7,
         sm.Field(
