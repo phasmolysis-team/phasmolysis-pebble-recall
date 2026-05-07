@@ -46,6 +46,8 @@ interface Stone {
 	value: number;
 }
 
+
+
 export function Pond() {
 	const [page, setPage] = useState("pond");
 	const [hat, setHat] = useState(0);
@@ -61,6 +63,29 @@ export function Pond() {
 	const ripples = useRef<Ripple[]>([]);
 	const stains = useRef<Stain[]>([]);
 	const stones = useRef<Stone[]>([]);
+
+ const rippleSounds: HTMLAudioElement[] = []
+
+for (let i = 1; i <= 3; i++) {
+  const audio = new Audio(
+    `./sound_effects/ripple${i}.wav`
+  )
+
+  audio.load()
+
+  rippleSounds.push(audio)
+}
+const waterSounds: HTMLAudioElement[] = []
+
+for (let i = 1; i <= 17; i++) {
+  const audio = new Audio(
+    `./sound_effects/water${i}.wav`
+  )
+
+  audio.load()
+
+  waterSounds.push(audio)
+}
 
 	const receiveAndSetValence = (val: number) => {
 		setValence(val);
@@ -83,7 +108,6 @@ export function Pond() {
 
 		console.log("response", response);
 
-		console.log("got here: valence: " + valence + " energy: " + energy);
 		setPage("pond");
 	};
 	const goToValenceScreen = () => {
@@ -95,6 +119,62 @@ export function Pond() {
 		setEyes(Math.floor(Math.random() * 4) + 1);
 		setBase(Math.floor(Math.random() * 4) + 1);
 	};
+  const playRippleSound = (
+    energy:number
+  ) => {
+    const sound =
+    rippleSounds[
+      Math.floor(
+        Math.random() *
+        rippleSounds.length
+      )
+    ]
+
+  // clone allows overlapping playback
+  const audio = sound.cloneNode() as HTMLAudioElement
+
+  // energy affects volume
+  audio.volume = Math.min(
+    0.15 + energy * 0.008,
+    1
+  )
+
+  // subtle pitch variation
+  audio.playbackRate =
+    0.9 + Math.random() * 0.2
+  try {
+    audio.play();
+  }catch(error){
+
+   }
+  }
+
+   const playWaterSound = (
+
+  ) => {
+    const sound =
+    waterSounds[
+      Math.floor(
+        Math.random() *
+        rippleSounds.length
+      )
+    ]
+
+  // clone allows overlapping playback
+  const audio = sound.cloneNode() as HTMLAudioElement
+
+  // energy affects volume
+  audio.volume = 0.3
+
+  // subtle pitch variation
+  audio.playbackRate =
+    0.9 + Math.random() * 0.2
+    try {
+    audio.play();
+    } catch(error){
+      
+    }
+  }
 	const throwStone = (xPercent: number, powerPercent: number) => {
 		const width = widthRef.current;
 		const height = heightRef.current;
@@ -244,6 +324,8 @@ export function Pond() {
 
 				color: getColorFromValue(value),
 			});
+   
+      
 		};
 		// ---------------------------------
 		// Dye Stain
@@ -412,7 +494,10 @@ export function Pond() {
 
 				// impact
 				if (stone.progress >= 1) {
+          playWaterSound();
 					createRipple(target.x, target.y, 5);
+         
+          
 
 					stone.current++;
 					stone.progress = 0;
@@ -422,7 +507,7 @@ export function Pond() {
 						stone.active = false;
 
 						createRipple(stone.sinkX, stone.sinkY, 3);
-
+            playRippleSound(stone.value);
 						createStain(stone.sinkX, stone.sinkY, stone.value);
 					}
 				}
