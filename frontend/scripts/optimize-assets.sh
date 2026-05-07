@@ -1,17 +1,13 @@
 # Constants
-SRC_DIR="./assets/static/images"
+SRC_DIR="./src/assets/"
 EXCLUDE_FOLDERS=("screenshots")
-ICON_REL_SRC_PATH="lyra logo square.png"
+ICON_REL_SRC_PATH="rocktuber.png"
 ICON_REL_OUT_PATH="favicon.ico"
-BANNER_REL_SRC_PATH="lyra logo.png"
-BANNER_REL_OUT_PATH="banner.png"
 WIDTHS=(24 48 96 144 256 320 480 720 1080 1440)
 
 # Derived Variables
 ICON_SRC_PATH="$SRC_DIR/$ICON_REL_SRC_PATH"
 ICON_OUT_PATH="$SRC_DIR/$ICON_REL_OUT_PATH"
-BANNER_SRC_PATH="$SRC_DIR/$BANNER_REL_SRC_PATH"
-BANNER_OUT_PATH="$SRC_DIR/$BANNER_REL_OUT_PATH"
 
 # Function to check if a path should be excluded
 should_exclude() {
@@ -24,7 +20,6 @@ should_exclude() {
     return 1  # no, keep
 }
 magick "$ICON_SRC_PATH" -resize "180x180" -quality 80 "$ICON_OUT_PATH"
-magick "$BANNER_SRC_PATH" -resize "1200x800" -quality 80 "$BANNER_OUT_PATH"
 
 # find all images recursively
 find "$SRC_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read IMG; do
@@ -37,13 +32,22 @@ find "$SRC_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \
     DIR_NAME="$(dirname "$IMG")"
     BASE_NAME="$(basename "$IMG" | sed 's/\.[^.]*$//')"  # strip extension
 
-    for SIZE in "${WIDTHS[@]}"; do
-        OUT_FILE="$DIR_NAME/${BASE_NAME}-${SIZE}w.webp"
+    ORIG_WIDTH=$(magick identify -format "%w" "$IMG")
 
-        # convert + resize + optimize
-        magick "$IMG" -resize "${SIZE}x" -quality 80 "$OUT_FILE"
-        echo "Created $OUT_FILE"
-    done
+	for SIZE in "${WIDTHS[@]}"; do
+		# skip if target size is larger than original
+		if (( SIZE > ORIG_WIDTH )); then
+			echo "Skipping ${SIZE}w for $IMG (original: ${ORIG_WIDTH}px)"
+			continue
+		fi
+
+		OUT_FILE="$DIR_NAME/${BASE_NAME}-${SIZE}w.webp"
+
+		# convert + resize + optimize
+		magick "$IMG" -resize "${SIZE}x" -quality 80 "$OUT_FILE"
+
+		echo "Created $OUT_FILE"
+	done
 done
 
 echo "All images optimized in-place!"
