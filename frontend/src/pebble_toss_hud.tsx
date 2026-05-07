@@ -1,4 +1,3 @@
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useRef, useState } from "react";
 import addRockIcon from "./assets/add_rock_icon.png";
 import exportIcon from "./assets/export_icon.png";
