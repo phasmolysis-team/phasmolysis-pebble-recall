@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMoods } from "./features/moods/hooks/use-moods.ts";
 import type { MoodLog } from "./types/mood.ts";
 
@@ -204,6 +204,10 @@ export function Calendar({
 		setSelectedDay_Parent(givenDate);
 		setCalendarOpen();
 	}
+
+	useEffect(() => {
+    		changeMonth(0)
+	}, [currentYear])
 
 	// Leading empty cells
 	return (
