@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { CSSProperties, FormEvent } from "react";
+import type { CSSProperties} from "react";
 
 import logoIcon from "./assets/logo.png";
 
@@ -34,22 +34,6 @@ export function LoginPopup() {
 	const [loginErrors, setLoginErrors] = useState<LoginErrors>({});
 	const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({});
 
-	const validateLogin = () => {
-		const errors: LoginErrors = {};
-
-		if (!loginData.username.trim()) {
-			errors.username = "Username is required.";
-		}
-
-		if (!loginData.password.trim()) {
-			errors.password = "Password is required.";
-		}
-
-		setLoginErrors(errors);
-
-		return Object.keys(errors).length === 0;
-	};
-
 	const validateRegister = () => {
 		const errors: RegisterErrors = {};
 
@@ -63,12 +47,6 @@ export function LoginPopup() {
 			errors.email = "Please enter a valid email.";
 		}
 
-		if (!registerData.contact.trim()) {
-			errors.contact = "Contact number is required.";
-		} else if (!/^\d{10,15}$/.test(registerData.contact)) {
-			errors.contact = "Contact number must contain 10-15 digits.";
-		}
-
 		if (!registerData.password.trim()) {
 			errors.password = "Password is required.";
 		} else if (registerData.password.length < 6) {
@@ -80,27 +58,6 @@ export function LoginPopup() {
 		return Object.keys(errors).length === 0;
 	};
 
-	const handleLoginSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		if (validateLogin()) {
-			setShowSavedPopup(true);
-
-			setTimeout(() => {
-				setShowSavedPopup(false);
-			}, 2000);
-		}
-	};
-
-	const handleRegisterSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		if (validateRegister()) {
-			alert("Registration successful!");
-			setShowRegister(false);
-		}
-	};
-
 	return (
 		<>
 			<div style={styles.overlay}>
@@ -109,9 +66,9 @@ export function LoginPopup() {
 
 					<h1 style={styles.title}>Login</h1>
 
-					<form onSubmit={handleLoginSubmit} className="space-y-5">
+					<form className="space-y-5" action="/api/auth/login" method="post">
 						<div>
-							<label style={styles.label}>Username</label>
+							<label htmlFor="username" style={styles.label}>Username</label>
 
 							<input
 								type="text"
@@ -122,6 +79,7 @@ export function LoginPopup() {
 										username: e.target.value,
 									})
 								}
+								name="username"
 								style={styles.input}
 								placeholder="Enter username"
 							/>
@@ -132,7 +90,7 @@ export function LoginPopup() {
 						</div>
 
 						<div>
-							<label style={styles.label}>Password</label>
+							<label htmlFor="password" style={styles.label}>Password</label>
 
 							<input
 								type="password"
@@ -143,6 +101,7 @@ export function LoginPopup() {
 										password: e.target.value,
 									})
 								}
+								name="password"
 								style={styles.input}
 								placeholder="Enter password"
 							/>
@@ -151,6 +110,12 @@ export function LoginPopup() {
 								<p style={styles.errorText}>{loginErrors.password}</p>
 							)}
 						</div>
+
+						<input
+							hidden={true}
+							name="role"
+							value="patient"
+						/>
 
 						<button type="submit" style={styles.saveButton}>
 							Login
@@ -161,6 +126,7 @@ export function LoginPopup() {
 						<p>Don't have an account?</p>
 
 						<button
+							type="button"
 							onClick={() => setShowRegister(true)}
 							style={styles.linkButton}
 						>
@@ -174,6 +140,7 @@ export function LoginPopup() {
 				<div style={styles.overlay}>
 					<div style={styles.popup}>
 						<button
+							type="button"
 							onClick={() => setShowRegister(false)}
 							style={styles.xButton}
 						>
@@ -182,12 +149,13 @@ export function LoginPopup() {
 
 						<h2 style={styles.title}>Create Account</h2>
 
-						<form onSubmit={handleRegisterSubmit} className="space-y-5">
+						<form action="/api/auth/register" method="post" className="space-y-5">
 							<div>
-								<label style={styles.label}>Username</label>
+								<label htmlFor="username" style={styles.label}>Username</label>
 
 								<input
 									type="text"
+									name="username"
 									value={registerData.username}
 									onChange={(e) =>
 										setRegisterData({
@@ -205,7 +173,7 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label style={styles.label}>Email</label>
+								<label htmlFor="email" style={styles.label}>Email</label>
 
 								<input
 									type="email"
@@ -216,6 +184,7 @@ export function LoginPopup() {
 											email: e.target.value,
 										})
 									}
+									name="email"
 									style={styles.input}
 									placeholder="Enter email"
 								/>
@@ -226,7 +195,7 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label style={styles.label}>Contact Number</label>
+								<label htmlFor="contact_number" style={styles.label}>Contact Number</label>
 
 								<input
 									type="text"
@@ -237,6 +206,7 @@ export function LoginPopup() {
 											contact: e.target.value,
 										})
 									}
+									name="contact_number"
 									style={styles.input}
 									placeholder="Enter contact number"
 								/>
@@ -247,9 +217,10 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label style={styles.label}>Password</label>
+								<label htmlFor="password" style={styles.label}>Password</label>
 
 								<input
+									name="password"
 									type="password"
 									value={registerData.password}
 									onChange={(e) =>
@@ -266,6 +237,8 @@ export function LoginPopup() {
 									<p style={styles.errorText}>{registerErrors.password}</p>
 								)}
 							</div>
+
+							<input hidden={true} name="role" value="patient" />
 
 							<button type="submit" style={styles.saveButton}>
 								Register

@@ -6,8 +6,6 @@ import "./app.css";
 import { Pond } from "./pond.tsx";
 
 export function App() {
-	return <Pond />;
-
 	const auth = useAuth();
 
 	if (auth.user) {

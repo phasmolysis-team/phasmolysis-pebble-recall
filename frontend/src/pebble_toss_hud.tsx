@@ -4,6 +4,7 @@ import exportIcon from "./assets/export_icon.png";
 import hamburgerIcon from "./assets/hamburger_icon.png";
 import logsIcon from "./assets/logs_icon.png";
 import rockLogIcon from "./assets/rock_log.png";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import "./pebble_toss_hud.css";
 
@@ -162,6 +163,11 @@ function HamburgerMenu({
 							style={{ marginTop: "10px", width: "50px", height: "50px" }}
 						/>
 					</button>
+					<form action="/api/auth/logout" method="GET">
+						<button aria-label="logout" type="submit" style={styles.iconButton}>
+							<LogoutIcon fontSize="large" size="large" />
+						</button>
+					</form>
 				</div>
 			)}
 		</div>

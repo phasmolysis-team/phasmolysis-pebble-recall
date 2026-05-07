@@ -9,7 +9,7 @@ from starlette.status import (
     HTTP_200_OK,
     HTTP_409_CONFLICT,
     HTTP_201_CREATED,
-    HTTP_406_NOT_ACCEPTABLE,
+    HTTP_406_NOT_ACCEPTABLE, HTTP_307_TEMPORARY_REDIRECT, HTTP_301_MOVED_PERMANENTLY,
 )
 from cryptography.exceptions import InvalidKey
 from app.core.security.kdf_pass import get_kdf
@@ -25,6 +25,7 @@ from app.schemas.cookies import (
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Annotated, Literal
 from fastapi import APIRouter, Form, Depends, HTTPException, Response, Request
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from sqlmodel import select, or_
 
@@ -37,7 +38,7 @@ class LoginData(BaseModel):
     role: Literal["professional", "patient"]
 
 
-@router.post(path="/login", response_model=str, status_code=HTTP_200_OK)
+@router.post(path="/login", status_code=HTTP_200_OK)
 async def login_user(
     request: Request,
     response: Response,
@@ -82,7 +83,9 @@ async def login_user(
     )
 
     response.set_cookie(**cookie_params)
-    return "Successfully logged in"
+    response.headers["Location"] = "/"
+    response.status_code = HTTP_301_MOVED_PERMANENTLY
+    return response
 
 
 @router.get(path="/decrypt_cookie")
@@ -119,13 +122,14 @@ async def logout_user(
         del cookie_params["value"]
         del cookie_params["expires"]
         response.delete_cookie(**cookie_params)
-        return "Successfully logged out user"
+        response.headers["Location"] = "/"
+        response.status_code = HTTP_301_MOVED_PERMANENTLY
+        return response
     raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @router.post(
     "/register",
-    response_model=UserWithoutPassword,
     status_code=HTTP_201_CREATED,
 )
 async def register_new_user(
@@ -171,10 +175,12 @@ async def register_new_user(
     session.add(user)
     await session.commit()
     await session.refresh(user)
-    response = UserWithoutPassword(
-        username=user.username,
-        email=user.email,
-        contact_number=user.contact_number,
-        professional_license_id=user.professional_license_id,
-    )
+    # payload = UserWithoutPassword(
+    #     username=user.username,
+    #     email=user.email,
+    #     contact_number=user.contact_number,
+    #     professional_license_id=user.professional_license_id,
+    # )
+    response = Response(status_code=HTTP_301_MOVED_PERMANENTLY)
+    response.headers["Location"] = "/"
     return response
