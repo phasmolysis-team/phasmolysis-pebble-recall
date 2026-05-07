@@ -19,7 +19,7 @@ should_exclude() {
     done
     return 1  # no, keep
 }
-magick "$ICON_SRC_PATH" -resize "180x180" -quality 80 "$ICON_OUT_PATH"
+magick "$ICON_SRC_PATH" -resize "180x180" -strip -quality 80 "$ICON_OUT_PATH"
 
 # find all images recursively
 find "$SRC_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read IMG; do
@@ -44,7 +44,7 @@ find "$SRC_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \
 		OUT_FILE="$DIR_NAME/${BASE_NAME}-${SIZE}w.webp"
 
 		# convert + resize + optimize
-		magick "$IMG" -resize "${SIZE}x" -quality 80 "$OUT_FILE"
+		magick "$IMG" -resize "${SIZE}x" -strip -quality 80 -define webp:method=6 -define webp:auto-filter=true -define webp:lossless=false "$OUT_FILE"
 
 		echo "Created $OUT_FILE"
 	done

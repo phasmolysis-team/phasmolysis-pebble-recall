@@ -273,6 +273,7 @@ const styles: Record<string, CSSProperties> = {
 		width: "140px",
 		alignSelf: "center",
 		marginBottom: "10px",
+		background:"transparent"
 	},
 
 	title: {

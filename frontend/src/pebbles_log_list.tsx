@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Calendar } from "./calendar.tsx";
 import type { MoodLog } from "./types/mood.ts";
 import "./pebbles_log_list.css";
-import calendarIcon from "./assets/calendar.png";
+import calendarIcon from "./assets/calendar-48w.webp";
 import { useMoods } from "./features/moods/hooks/use-moods.ts";
 
 type RGB = {
@@ -113,7 +113,7 @@ export function PebbleLogListScreen({
 						]);
 
 						console.log("daylog", date, log.valence, log.arousal);
-            const size = ((log.arousal / 100) * 35) + 5
+						const size = (log.arousal / 100) * 35 + 5;
 						return (
 							<div
 								key={log.id}
@@ -292,6 +292,6 @@ const styles: Record<string, any> = {
 
 		cursor: "pointer",
 		transition: "width 0.15s ease, height 0.15s ease",
-    outline: "2px solid white"
+		outline: "2px solid white",
 	},
 };

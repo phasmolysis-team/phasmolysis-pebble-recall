@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-import happyIcon from "./assets/happy.png";
-import sadIcon from "./assets/sad.png";
+import happyIcon from "./assets/happy-96w.webp";
+import sadIcon from "./assets/sad-96w.webp";
 import "./valence_screen.css";
 import { RockComposite } from "./rock_composite.tsx";
 

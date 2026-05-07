@@ -105,6 +105,7 @@
 	width: 120px;
 	top: 30px;
 	left: 50px;
+	background:transparent;
 	@media (max-width: 760px) {
 		width: 80px;
 	}
