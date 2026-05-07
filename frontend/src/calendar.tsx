@@ -13,16 +13,6 @@ type DayInfo = {
 	value: number;
 };
 
-const sampleData: Record<number, DayInfo> = {
-	2: { size: "small", value: 0.1 },
-	5: { size: "big", value: 0.9 },
-	8: { size: "small", value: 0.6 },
-	12: { size: "big", value: 0.2 },
-	16: { size: "small", value: 0.8 },
-	21: { size: "big", value: 0.45 },
-	26: { size: "small", value: 1.0 },
-};
-
 function gradientColor(value: number): string {
 	const clamped = Math.max(0, Math.min(1, value));
 
@@ -80,11 +70,10 @@ export function Calendar({
 				value: m.valence,
 			};
 		}
-		return tmpInfo
+		return tmpInfo;
 	});
 	const [cells, setCells] = useState<React.ReactNode[]>(() => {
-
-		const tcells: React.ReactNode[] =[]
+		const tcells: React.ReactNode[] = [];
 		for (let i = 0; i < firstDay; i++) {
 			tcells.push(<div className="empty-cell" key={`empty-${i}`} />);
 		}
@@ -116,7 +105,7 @@ export function Calendar({
 				</div>,
 			);
 		}
-		return tcells
+		return tcells;
 	});
 
 	function changeMonth(offset: number): void {
@@ -137,7 +126,7 @@ export function Calendar({
 		setCurrentMoodLogMonth(
 			moodLogData.moods.filter((m) => {
 				const t = new Date(m.timestamp);
-				return t.getMonth() === currentMonth && t.getFullYear() === currentYear
+				return t.getMonth() === currentMonth && t.getFullYear() === currentYear;
 			}),
 		);
 
@@ -161,7 +150,7 @@ export function Calendar({
 				year: "numeric",
 			}),
 		);
-		const tcells: React.ReactNode[] =[]
+		const tcells: React.ReactNode[] = [];
 		for (let i = 0; i < firstDay; i++) {
 			tcells.push(<div className="empty-cell" key={`empty-${i}`} />);
 		}
@@ -193,7 +182,7 @@ export function Calendar({
 				</div>,
 			);
 		}
-		setCells(tcells)
+		setCells(tcells);
 	}
 
 	function changeYear(offset: number): void {
@@ -206,8 +195,8 @@ export function Calendar({
 	}
 
 	useEffect(() => {
-    		changeMonth(0)
-	}, [currentYear])
+		changeMonth(0);
+	}, [currentYear]);
 
 	// Leading empty cells
 	return (

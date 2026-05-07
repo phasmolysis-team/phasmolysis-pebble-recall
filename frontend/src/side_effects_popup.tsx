@@ -44,7 +44,7 @@ export function SideEffectsJournalPopup({
 		}
 	}
 
-	async function handleSave(): void {
+	async function handleSave(): Promise<void> {
 		setSavedData((prev) => ({
 			...prev,
 			[selectedDate]: {
@@ -56,20 +56,19 @@ export function SideEffectsJournalPopup({
 		setShowSavedPopup(true);
 
 		const response = await fetch("/api/medications/logs", {
-    			method: "POST",
-    			credentials: "include",
-    			headers: {
-        			"Content-Type": "application/json",
-    			},
-    			body: JSON.stringify({
-        			custom_date: selectedDate,
-        			side_effects: text,
-        			medication: dropdownValue
-    			})
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				custom_date: selectedDate,
+				side_effects: text,
+				medication: dropdownValue,
+			}),
+		});
 
-		})
-
-		console.log("response", response)
+		console.log("response", response);
 
 		setTimeout(() => {
 			setShowSavedPopup(false);
@@ -79,14 +78,20 @@ export function SideEffectsJournalPopup({
 	return (
 		<>
 			<div style={styles.overlay}>
-				<button type="button" className="topRightXButton" onClick={dismissScreenAndReopenHUD}>
+				<button
+					type="button"
+					className="topRightXButton"
+					onClick={dismissScreenAndReopenHUD}
+				>
 					x
 				</button>
 				<div style={styles.popup} className="box">
 					<h1 style={styles.title}>Side Effects Journal</h1>
 
 					{/* Date */}
-					<label htmlFor="custom_date" style={styles.label}>Select Date</label>
+					<label htmlFor="custom_date" style={styles.label}>
+						Select Date
+					</label>
 
 					<input
 						name="custom_date"
@@ -102,7 +107,9 @@ export function SideEffectsJournalPopup({
 					/>
 
 					{/* Text */}
-					<label htmlFor="side_effects" style={styles.label}>Write Side Effects Experienced</label>
+					<label htmlFor="side_effects" style={styles.label}>
+						Write Side Effects Experienced
+					</label>
 
 					<textarea
 						name="side_effects"
@@ -117,7 +124,9 @@ export function SideEffectsJournalPopup({
 					/>
 
 					{/* Dropdown */}
-					<label htmlFor="medication" style={styles.label}>Medication</label>
+					<label htmlFor="medication" style={styles.label}>
+						Medication
+					</label>
 
 					<select
 						name="medication"

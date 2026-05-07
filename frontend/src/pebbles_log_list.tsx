@@ -1,16 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "./calendar.tsx";
 import type { MoodLog } from "./types/mood.ts";
 import "./pebbles_log_list.css";
 import calendarIcon from "./assets/calendar.png";
 import { useMoods } from "./features/moods/hooks/use-moods.ts";
-
-type LogEntry = {
-	id: number;
-	timestamp: number;
-	mood: number; // horizontal bar value (0-100)
-	energy: number; // vertical bar value (0-100)
-};
 
 type RGB = {
 	r: number;

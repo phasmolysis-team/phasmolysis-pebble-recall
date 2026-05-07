@@ -81,7 +81,7 @@ export function Pond() {
 			}),
 		});
 
-		console.log("response", response)
+		console.log("response", response);
 
 		console.log("got here: valence: " + valence + " energy: " + energy);
 		setPage("pond");
