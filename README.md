@@ -18,7 +18,7 @@ A `seed_credentials.json` file is included in the repo with over 1,000 pre-seede
 
 Live demo: https://pebble-recall.lyra-on.top
 
-Just open seed_credentials.json and pick any account at random — each one has an email, password, and role (patient or professional). Log in and explore!
+Just open `seed_credentials.json` and pick any account at random — each one has an email, password, and role (patient or professional). Log in and explore!
 
 These are seeded test accounts. Do not use real personal information when exploring the app.
 
