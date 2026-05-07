@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import stone from "./assets/stone.png";
+import stone from "./assets/stone-24w.webp";
 import { Logo } from "./logo";
 import { PebbleTossHUD, ThrowHUD } from "./pebble_toss_hud.tsx";
 import { PebbleLogListScreen } from "./pebbles_log_list.tsx";

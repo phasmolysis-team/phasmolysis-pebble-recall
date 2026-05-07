@@ -1,10 +1,10 @@
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRef, useState } from "react";
-import addRockIcon from "./assets/add_rock_icon.png";
-import exportIcon from "./assets/export_icon.png";
-import hamburgerIcon from "./assets/hamburger_icon.png";
-import logsIcon from "./assets/logs_icon.png";
-import rockLogIcon from "./assets/rock_log.png";
+import addRockIcon from "./assets/add_rock_icon-144w.webp";
+import exportIcon from "./assets/export_icon-96w.webp";
+import hamburgerIcon from "./assets/hamburger_icon-96w.webp";
+import logsIcon from "./assets/logs_icon-96w.webp";
+import rockLogIcon from "./assets/rock_log-96w.webp";
 
 import "./pebble_toss_hud.css";
 

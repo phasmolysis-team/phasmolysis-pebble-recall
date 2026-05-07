@@ -1,5 +1,5 @@
 import { useState } from "react";
-import sillyRockImage from "./assets/rock_question.png";
+import sillyRockImage from "./assets/rock_question-320w.webp";
 
 export function MedicationYesNoPopup() {
 	const [dismissPopup, setDismissPopup] = useState(false);
@@ -60,5 +60,6 @@ const styles = {
 		fontSize: "16px",
 		fontFamily: "youngseifRegular",
 		backgroundColor: "black",
+		color:"white"
 	},
 };

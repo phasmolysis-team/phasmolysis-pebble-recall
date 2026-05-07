@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Calendar } from "./calendar.tsx";
 import type { MoodLog } from "./types/mood.ts";
 import "./pebbles_log_list.css";
-import calendarIcon from "./assets/calendar.png";
+import calendarIcon from "./assets/calendar-48w.webp";
 import { useMoods } from "./features/moods/hooks/use-moods.ts";
 
 type RGB = {

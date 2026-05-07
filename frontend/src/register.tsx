@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { useState } from "react";
 
-import logoIcon from "./assets/logo.png";
+import logoIcon from "./assets/logo-144w.webp";
 
 type LoginErrors = {
 	username?: string;
@@ -270,6 +270,7 @@ const styles: Record<string, CSSProperties> = {
 		width: "140px",
 		alignSelf: "center",
 		marginBottom: "10px",
+		background:"transparent"
 	},
 
 	title: {
