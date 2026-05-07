@@ -97,7 +97,6 @@ Pebble Recall is a day-to-day logging system designed specifically for psychiatr
 - **Mood states** — logged at the moment they occur, using low-friction emoji-based categories
 - **Medication compliance** — simple yes/no check-ins for each prescribed medication
 - **Medication side effects** — structured, clickable logging to capture what often gets normalized or forgotten
-- **Patient-specific daily questions** — customized Likert-scale prompts configured by the clinician
 - **Exportable summaries** — PDF exports for patients to bring to their appointments, giving clinicians a longitudinal, accurate picture of the patient's experience
 
 The core design principle is **low friction**: most interactions are a single tap, not an essay. Because we know that on the hardest days, even small barriers become walls.
@@ -115,6 +114,7 @@ There are many features that remain to be built. This is a beginning, not a fini
 - **Real-time clinician dashboards** — allowing psychiatrists and psychologists to monitor patient logs as they come in, rather than waiting for an export at the next appointment
 - **SOS / crisis escalation feature** — a dedicated button for psychiatric emergencies that rapidly connects patients to crisis hotlines, emergency services, or trusted contacts
 - **Patient-Clinician linked accounts** — a more robust, privacy-conscious system for clinicians to configure patient experiences and monitor progress
+- **Patient-specific daily questions** — customized Likert-scale prompts configured by the clinician
 - **Accessibility improvements** — making Pebble Recall usable for patients who struggle with current interfaces
 - **Guided mood vocabulary** — in-app definitions and contextual help so patients are never left uncertain about what a mood label means
 - **Longitudinal data visualization** — helping both patients and clinicians identify patterns across time
