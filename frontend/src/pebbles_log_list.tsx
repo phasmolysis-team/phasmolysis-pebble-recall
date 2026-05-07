@@ -41,7 +41,7 @@ export function PebbleLogListScreen({
 				return logLocalDate === selectedDate;
 			}),
 		);
-	}, [selectedDate, setSelectedDate, moodLogData.moods.filter]);
+	}, [selectedDate, moodLogData.moods]);
 	return (
 		<div className="overlay">
 			{calendarOpen && (
