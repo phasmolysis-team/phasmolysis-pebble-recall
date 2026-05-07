@@ -126,7 +126,7 @@ for (let i = 1; i <= 17; i++) {
 			}),
 		});
 
-		console.log("response", response)
+		console.log("response", response);
 
 		setPage("pond");
 	};

@@ -1,5 +1,5 @@
+import type { CSSProperties } from "react";
 import { useState } from "react";
-import type { CSSProperties} from "react";
 
 import logoIcon from "./assets/logo.png";
 import bg from "./assets/bg.png"
@@ -18,8 +18,7 @@ type RegisterErrors = {
 
 export function LoginPopup() {
 	const [showRegister, setShowRegister] = useState(false);
-	const [showSavedPopup, setShowSavedPopup] = useState(false);
-
+	const [showSavedPopup] = useState(false);
 	const [loginData, setLoginData] = useState({
 		username: "",
 		password: "",
@@ -32,32 +31,8 @@ export function LoginPopup() {
 		password: "",
 	});
 
-	const [loginErrors, setLoginErrors] = useState<LoginErrors>({});
-	const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({});
-
-	const validateRegister = () => {
-		const errors: RegisterErrors = {};
-
-		if (!registerData.username.trim()) {
-			errors.username = "Username is required.";
-		}
-
-		if (!registerData.email.trim()) {
-			errors.email = "Email is required.";
-		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerData.email)) {
-			errors.email = "Please enter a valid email.";
-		}
-
-		if (!registerData.password.trim()) {
-			errors.password = "Password is required.";
-		} else if (registerData.password.length < 6) {
-			errors.password = "Password must be at least 6 characters.";
-		}
-
-		setRegisterErrors(errors);
-
-		return Object.keys(errors).length === 0;
-	};
+	const [loginErrors] = useState<LoginErrors>({});
+	const [registerErrors] = useState<RegisterErrors>({});
 
 	return (
 		<>
@@ -69,7 +44,9 @@ export function LoginPopup() {
 
 					<form className="space-y-5" action="/api/auth/login" method="post">
 						<div>
-							<label htmlFor="username" style={styles.label}>Username</label>
+							<label htmlFor="username" style={styles.label}>
+								Username
+							</label>
 
 							<input
 								type="text"
@@ -91,7 +68,9 @@ export function LoginPopup() {
 						</div>
 
 						<div>
-							<label htmlFor="password" style={styles.label}>Password</label>
+							<label htmlFor="password" style={styles.label}>
+								Password
+							</label>
 
 							<input
 								type="password"
@@ -112,11 +91,7 @@ export function LoginPopup() {
 							)}
 						</div>
 
-						<input
-							hidden={true}
-							name="role"
-							value="patient"
-						/>
+						<input hidden={true} name="role" value="patient" />
 
 						<button type="submit" style={styles.saveButton}>
 							Login
@@ -150,9 +125,15 @@ export function LoginPopup() {
 
 						<h2 style={styles.title}>Create Account</h2>
 
-						<form action="/api/auth/register" method="post" className="space-y-5">
+						<form
+							action="/api/auth/register"
+							method="post"
+							className="space-y-5"
+						>
 							<div>
-								<label htmlFor="username" style={styles.label}>Username</label>
+								<label htmlFor="username" style={styles.label}>
+									Username
+								</label>
 
 								<input
 									type="text"
@@ -174,7 +155,9 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label htmlFor="email" style={styles.label}>Email</label>
+								<label htmlFor="email" style={styles.label}>
+									Email
+								</label>
 
 								<input
 									type="email"
@@ -196,7 +179,9 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label htmlFor="contact_number" style={styles.label}>Contact Number</label>
+								<label htmlFor="contact_number" style={styles.label}>
+									Contact Number
+								</label>
 
 								<input
 									type="text"
@@ -218,7 +203,9 @@ export function LoginPopup() {
 							</div>
 
 							<div>
-								<label htmlFor="password" style={styles.label}>Password</label>
+								<label htmlFor="password" style={styles.label}>
+									Password
+								</label>
 
 								<input
 									name="password"
