@@ -5,6 +5,7 @@ import { PebbleTossHUD, ThrowHUD } from "./pebble_toss_hud.tsx";
 import { PebbleLogListScreen } from "./pebbles_log_list.tsx";
 import { SideEffectsJournalPopup } from "./side_effects_popup.tsx";
 import { ValenceScreen } from "./valence_screen.tsx";
+import {MedicationYesNoPopup} from './medication_yesno.tsx'
 
 interface Ripple {
 	x: number;
@@ -64,6 +65,7 @@ export function Pond() {
 	const widthRef = useRef(0);
 	const heightRef = useRef(0);
 	const [valence, setValence] = useState(0);
+	const [showPopup, setShowPopup] = useState(false);
 
 
 
@@ -294,6 +296,41 @@ for (let i = 1; i <= 17; i++) {
 	};
 
 	useEffect(() => {
+
+		const fetchLatestLog = async () => {
+			try {
+				const response = await fetch("/api/medications/logs/latest", {
+					method: "GET",
+					credentials: "include",
+				});
+
+				// If your API returns 404 when no log exists
+				if (response.status === 404) {
+					setShowPopup(true);
+					return;
+				}
+
+				if (!response.ok) {
+					throw new Error("Failed to fetch latest log");
+				}
+
+				const data = await response.json();
+
+
+				// If a latest log exists
+				if (data) {
+					setShowPopup(false);
+				}
+				else {
+					setShowPopup(true);
+				}
+			} catch (error) {
+				setShowPopup(true);
+			} 
+		};
+
+		fetchLatestLog();
+
 		const stoneImage = new Image();
 
 		stoneImage.src = stone;
@@ -746,6 +783,9 @@ canvas.addEventListener(
 
 	return (
 		<>
+			{showPopup && (
+				<MedicationYesNoPopup/>
+			)}
 			<Logo></Logo>
 			{page === "pond" && (
 				<PebbleTossHUD
