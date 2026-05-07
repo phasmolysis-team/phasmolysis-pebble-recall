@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
+import { useMoods } from "./features/moods/hooks/use-moods.ts";
+import type { MoodLog } from "./types/mood.ts";
 
 type CircleSize = "small" | "big";
+
+function randomSize(): "big" | "small" {
+	return Math.random() < 0.5 ? "big" : "small";
+}
 
 type DayInfo = {
 	size: CircleSize;
@@ -43,11 +49,75 @@ export function Calendar({
 	setCalendarOpen = () => {},
 	setSelectedDay_Parent = (_date: Date) => {},
 }) {
+	const moodLogData = useMoods(true);
+	const [currentMoodLogMonth, setCurrentMoodLogMonth] = useState<MoodLog[]>([]);
 	const today = useMemo(() => new Date(), []);
 
 	const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth());
 
 	const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
+	const [firstDay, setFirstday] = useState<number>(
+		new Date(currentYear, currentMonth, 1).getDay(),
+	);
+
+	const [totalDays, setTotalDays] = useState<number>(
+		new Date(currentYear, currentMonth + 1, 0).getDate(),
+	);
+
+	const [monthLabel, setMonthLabel] = useState<string>(
+		new Date(currentYear, currentMonth).toLocaleString("default", {
+			month: "long",
+			year: "numeric",
+		}),
+	);
+	const [info, setInfo] = useState<Record<number, DayInfo>>(() => {
+		const tmpInfo: Record<number, DayInfo> = {};
+
+		for (const m of currentMoodLogMonth) {
+			const day = new Date(m.timestamp).getDay();
+			tmpInfo[day] = {
+				size: randomSize(),
+				value: m.valence,
+			};
+		}
+		return tmpInfo
+	});
+	const [cells, setCells] = useState<React.ReactNode[]>(() => {
+
+		const tcells: React.ReactNode[] =[]
+		for (let i = 0; i < firstDay; i++) {
+			tcells.push(<div className="empty-cell" key={`empty-${i}`} />);
+		}
+
+		// Actual day cells
+		for (let day = 1; day <= totalDays; day++) {
+			const dayinfo = info[day];
+
+			tcells.push(
+				<div
+					key={day}
+					className={`day-cell`}
+					onClick={() =>
+						setSelectedDayAndDismissCalendar(
+							new Date(currentYear, currentMonth, day),
+						)
+					}
+				>
+					<div className="day-number">{day}</div>
+
+					{dayinfo && (
+						<div
+							className={`circle ${dayinfo.size}`}
+							style={{
+								background: gradientColor(dayinfo.value),
+							}}
+						/>
+					)}
+				</div>,
+			);
+		}
+		return tcells
+	});
 
 	function changeMonth(offset: number): void {
 		let newMonth = currentMonth + offset;
@@ -64,7 +134,66 @@ export function Calendar({
 		}
 
 		setCurrentMonth(newMonth);
+		setCurrentMoodLogMonth(
+			moodLogData.moods.filter((m) => {
+				const t = new Date(m.timestamp);
+				return t.getMonth() === currentMonth;
+			}),
+		);
+
+		const tmpInfo: Record<number, DayInfo> = {};
+
+		for (const m of currentMoodLogMonth) {
+			const day = new Date(m.timestamp).getDay();
+			tmpInfo[day] = {
+				size: randomSize(),
+				value: m.valence,
+			};
+		}
+		setInfo(tmpInfo);
+
 		setCurrentYear(newYear);
+		setFirstday(new Date(currentYear, currentMonth, 1).getDay());
+		setTotalDays(new Date(currentYear, currentMonth + 1, 0).getDate());
+		setMonthLabel(
+			new Date(currentYear, currentMonth).toLocaleString("default", {
+				month: "long",
+				year: "numeric",
+			}),
+		);
+		const tcells: React.ReactNode[] =[]
+		for (let i = 0; i < firstDay; i++) {
+			tcells.push(<div className="empty-cell" key={`empty-${i}`} />);
+		}
+
+		// Actual day cells
+		for (let day = 1; day <= totalDays; day++) {
+			const dayinfo = info[day];
+
+			tcells.push(
+				<div
+					key={day}
+					className={`day-cell`}
+					onClick={() =>
+						setSelectedDayAndDismissCalendar(
+							new Date(currentYear, currentMonth, day),
+						)
+					}
+				>
+					<div className="day-number">{day}</div>
+
+					{dayinfo && (
+						<div
+							className={`circle ${dayinfo.size}`}
+							style={{
+								background: gradientColor(dayinfo.value),
+							}}
+						/>
+					)}
+				</div>,
+			);
+		}
+		setCells(tcells)
 	}
 
 	function changeYear(offset: number): void {
@@ -76,53 +205,7 @@ export function Calendar({
 		setCalendarOpen();
 	}
 
-	const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-
-	const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-	const monthLabel = new Date(currentYear, currentMonth).toLocaleString(
-		"default",
-		{
-			month: "long",
-			year: "numeric",
-		},
-	);
-
-	const cells: React.ReactNode[] = [];
-
 	// Leading empty cells
-	for (let i = 0; i < firstDay; i++) {
-		cells.push(<div className="empty-cell" key={`empty-${i}`} />);
-	}
-
-	// Actual day cells
-	for (let day = 1; day <= totalDays; day++) {
-		const info = sampleData[day];
-
-		cells.push(
-			<div
-				key={day}
-				className={`day-cell`}
-				onClick={() =>
-					setSelectedDayAndDismissCalendar(
-						new Date(currentYear, currentMonth, day),
-					)
-				}
-			>
-				<div className="day-number">{day}</div>
-
-				{info && (
-					<div
-						className={`circle ${info.size}`}
-						style={{
-							background: gradientColor(info.value),
-						}}
-					/>
-				)}
-			</div>,
-		);
-	}
-
 	return (
 		<>
 			<style>{styles}</style>
