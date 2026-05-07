@@ -66,8 +66,22 @@ export function Pond() {
 		setValence(val);
 	};
 
-	const receiveEnergyAndThrowRock = (energy: number) => {
+	const receiveEnergyAndThrowRock = async (energy: number) => {
 		throwStone(valence, energy);
+
+		const response = await fetch("/api/moods", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				valence: valence,
+				arousal: energy,
+			}),
+		});
+
+		console.log("response", response)
 
 		console.log("got here: valence: " + valence + " energy: " + energy);
 		setPage("pond");
