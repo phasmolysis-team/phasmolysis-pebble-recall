@@ -16,7 +16,7 @@ export function PebbleLogListScreen({
 }) {
 	const [calendarOpen, setCalendarOpen] = useState(false);
 	const [selectedDate, setSelectedDate] = useState<string>(
-		new Date().toISOString().split("T")[0],
+		new Date().toLocaleDateString('en-CA'),
 	);
 	const moodLogData = useMoods(true);
 
@@ -25,44 +25,20 @@ export function PebbleLogListScreen({
 	// -----------------------------------
 	const [dayLogs, setDayLogs] = useState<MoodLog[]>(() => {
 		return moodLogData.moods.filter((log) => {
-			const d = new Date(log.timestamp);
-			const day = d.getDay();
-			const year = d.getFullYear();
-			const month = d.getMonth();
-			const s = new Date(selectedDate);
-			const sday = s.getDay();
-			const syear = s.getFullYear();
-			const smonth = s.getMonth();
-
-			const e = day === sday && year === syear && month === smonth;
-			if (e) {
-				console.log(e, d, s);
-			}
-			return e;
+			const logLocalDate = new Date(log.timestamp).toLocaleDateString('en-CA');
+			return logLocalDate === selectedDate;
 		});
 	});
 
 	const setSelectedDate_Shared = (date: Date) => {
-		setSelectedDate(formatDate(date.toString()));
+		setSelectedDate(date.toLocaleDateString('en-CA'));
 	};
 
 	useEffect(() => {
 		setDayLogs(
 			moodLogData.moods.filter((log) => {
-				const d = new Date(log.timestamp);
-				const day = d.getDay();
-				const year = d.getFullYear();
-				const month = d.getMonth();
-				const s = new Date(selectedDate);
-				const sday = s.getDay();
-				const syear = s.getFullYear();
-				const smonth = s.getMonth();
-
-				const e = day === sday && year === syear && month === smonth;
-				if (e) {
-					console.log(e, d, s);
-				}
-				return e;
+				const logLocalDate = new Date(log.timestamp).toLocaleDateString('en-CA');
+				return logLocalDate === selectedDate;
 			}),
 		);
 	}, [selectedDate, setSelectedDate, moodLogData.moods.filter]);

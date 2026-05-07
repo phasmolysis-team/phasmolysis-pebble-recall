@@ -64,7 +64,7 @@ export function Calendar({
 		const tmpInfo: Record<number, DayInfo> = {};
 
 		for (const m of currentMoodLogMonth) {
-			const day = new Date(m.timestamp).getDay();
+			const day = new Date(m.timestamp).getDate();
 			tmpInfo[day] = {
 				size: randomSize(),
 				value: m.valence,
@@ -126,14 +126,14 @@ export function Calendar({
 		setCurrentMoodLogMonth(
 			moodLogData.moods.filter((m) => {
 				const t = new Date(m.timestamp);
-				return t.getMonth() === currentMonth && t.getFullYear() === currentYear;
+				return t.getMonth() === newMonth && t.getFullYear() === newYear;
 			}),
 		);
 
 		const tmpInfo: Record<number, DayInfo> = {};
 
 		for (const m of currentMoodLogMonth) {
-			const day = new Date(m.timestamp).getDay();
+			const day = new Date(m.timestamp).getDate();
 			tmpInfo[day] = {
 				size: randomSize(),
 				value: m.valence,
