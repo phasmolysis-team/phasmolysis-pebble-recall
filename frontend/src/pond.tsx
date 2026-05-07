@@ -15,6 +15,14 @@ interface Ripple {
 
 	color: string;
 }
+
+interface TrailParticle {
+	x: number;
+	y: number;
+	radius: number;
+	alpha: number;
+	color: string;
+}
 interface Stain {
 	x: number;
 	y: number;
@@ -46,6 +54,8 @@ interface Stone {
 	value: number;
 }
 
+
+
 export function Pond() {
 	const [page, setPage] = useState("pond");
 	const [hat, setHat] = useState(0);
@@ -55,12 +65,47 @@ export function Pond() {
 	const heightRef = useRef(0);
 	const [valence, setValence] = useState(0);
 
+
+
 	const setTintValence = (_value: string) => {};
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
 	const ripples = useRef<Ripple[]>([]);
 	const stains = useRef<Stain[]>([]);
 	const stones = useRef<Stone[]>([]);
+
+  const trails = useRef<TrailParticle[]>([])
+const mouse = useRef({
+	x: 0,
+	y: 0,
+	lastX: 0,
+	lastY: 0,
+	speed: 0,
+	inside: false,
+})
+
+ const rippleSounds: HTMLAudioElement[] = []
+
+for (let i = 1; i <= 3; i++) {
+  const audio = new Audio(
+    `./sound_effects/ripple${i}.wav`
+  )
+
+  audio.load()
+
+  rippleSounds.push(audio)
+}
+const waterSounds: HTMLAudioElement[] = []
+
+for (let i = 1; i <= 17; i++) {
+  const audio = new Audio(
+    `./sound_effects/water${i}.wav`
+  )
+
+  audio.load()
+
+  waterSounds.push(audio)
+}
 
 	const receiveAndSetValence = (val: number) => {
 		setValence(val);
@@ -83,7 +128,6 @@ export function Pond() {
 
 		console.log("response", response);
 
-		console.log("got here: valence: " + valence + " energy: " + energy);
 		setPage("pond");
 	};
 	const goToValenceScreen = () => {
@@ -95,6 +139,62 @@ export function Pond() {
 		setEyes(Math.floor(Math.random() * 4) + 1);
 		setBase(Math.floor(Math.random() * 4) + 1);
 	};
+  const playRippleSound = (
+    energy:number
+  ) => {
+    const sound =
+    rippleSounds[
+      Math.floor(
+        Math.random() *
+        rippleSounds.length
+      )
+    ]
+
+  // clone allows overlapping playback
+  const audio = sound.cloneNode() as HTMLAudioElement
+
+  // energy affects volume
+  audio.volume = Math.min(
+    0.15 + energy * 0.008,
+    1
+  )
+
+  // subtle pitch variation
+  audio.playbackRate =
+    0.9 + Math.random() * 0.2
+  try {
+    audio.play();
+  }catch(error){
+
+   }
+  }
+
+   const playWaterSound = (
+
+  ) => {
+    const sound =
+    waterSounds[
+      Math.floor(
+        Math.random() *
+        rippleSounds.length
+      )
+    ]
+
+  // clone allows overlapping playback
+  const audio = sound.cloneNode() as HTMLAudioElement
+
+  // energy affects volume
+  audio.volume = 0.3
+
+  // subtle pitch variation
+  audio.playbackRate =
+    0.9 + Math.random() * 0.2
+    try {
+    audio.play();
+    } catch(error){
+      
+    }
+  }
 	const throwStone = (xPercent: number, powerPercent: number) => {
 		const width = widthRef.current;
 		const height = heightRef.current;
@@ -244,7 +344,23 @@ export function Pond() {
 
 				color: getColorFromValue(value),
 			});
+   
+      
 		};
+
+    const createTrail = (
+	x: number,
+	y: number,
+	value: number
+) => {
+	trails.current.push({
+		x,
+		y,
+		radius: 8 + Math.random() * 8,
+		alpha: 0.25 + Math.random() * 0.2,
+		color: getColorFromValue(value),
+	})
+}
 		// ---------------------------------
 		// Dye Stain
 		// ---------------------------------
@@ -311,6 +427,50 @@ export function Pond() {
 				createRipple(Math.random() * width, Math.random() * height, 50, 3);
 			}
 
+            // ---------------------------------
+// Mouse Trails
+// ---------------------------------
+if (
+	mouse.current.inside &&
+	Math.random() < 0.65
+) {
+	createTrail(
+		mouse.current.x +
+			(Math.random() - 0.5) * 12,
+		mouse.current.y +
+			(Math.random() - 0.5) * 12,
+		0
+	)
+
+	// occasional tiny ripple
+	if (Math.random() < 0.08) {
+		createRipple(
+			mouse.current.x,
+			mouse.current.y,
+			0,
+			1.5
+		)
+	}
+}
+// ---------------------------------
+// Mouse Water Disturbance
+// ---------------------------------
+if (
+	mouse.current.inside &&
+	mouse.current.speed > 0.5 &&
+	Math.random() < 0.4
+) {
+	createRipple(
+		mouse.current.x +
+			(Math.random() - 0.5) * 8,
+		mouse.current.y +
+			(Math.random() - 0.5) * 8,
+		0,
+		0.6 +
+			mouse.current.speed * 0.08
+	)
+}
+
 			// ---------------------------------
 			// Stains
 			// ---------------------------------
@@ -331,6 +491,59 @@ export function Pond() {
 
 				ctx.restore();
 			}
+
+      // ---------------------------------
+// Trails
+// ---------------------------------
+trails.current =
+	trails.current.filter(
+		(t) => t.alpha > 0.01
+	)
+
+for (const trail of trails.current) {
+	trail.alpha *= 0.94
+	trail.radius *= 1.01
+
+	ctx.save()
+
+	ctx.globalAlpha = trail.alpha
+
+	const gradient =
+		ctx.createRadialGradient(
+			trail.x,
+			trail.y,
+			0,
+			trail.x,
+			trail.y,
+			trail.radius
+		)
+
+	gradient.addColorStop(
+		0,
+		trail.color
+	)
+
+	gradient.addColorStop(
+		1,
+		"transparent"
+	)
+
+	ctx.fillStyle = gradient
+
+	ctx.beginPath()
+
+	ctx.arc(
+		trail.x,
+		trail.y,
+		trail.radius,
+		0,
+		Math.PI * 2
+	)
+
+	ctx.fill()
+
+	ctx.restore()
+}
 
 			// ---------------------------------
 			// Ripples
@@ -412,7 +625,10 @@ export function Pond() {
 
 				// impact
 				if (stone.progress >= 1) {
+          playWaterSound();
 					createRipple(target.x, target.y, 5);
+         
+          
 
 					stone.current++;
 					stone.progress = 0;
@@ -422,7 +638,7 @@ export function Pond() {
 						stone.active = false;
 
 						createRipple(stone.sinkX, stone.sinkY, 3);
-
+            playRippleSound(stone.value);
 						createStain(stone.sinkX, stone.sinkY, stone.value);
 					}
 				}
@@ -433,9 +649,99 @@ export function Pond() {
 
 		animate();
 
+
+
+  const handleMouseMove = (
+	e: MouseEvent
+) => {
+	const rect =
+		canvas.getBoundingClientRect()
+
+	const x =
+		e.clientX - rect.left
+
+	const y =
+		e.clientY - rect.top
+
+	const dx = x - mouse.current.x
+	const dy = y - mouse.current.y
+
+	mouse.current.speed =
+		Math.sqrt(dx * dx + dy * dy)
+
+	mouse.current.lastX =
+		mouse.current.x
+
+	mouse.current.lastY =
+		mouse.current.y
+
+	mouse.current.x = x
+	mouse.current.y = y
+
+	mouse.current.inside = true
+}
+
+const handleMouseLeave = () => {
+	mouse.current.inside = false
+}
+
+const handleClick = (
+	e: MouseEvent
+) => {
+	const rect = canvas.getBoundingClientRect()
+
+	const x = e.clientX - rect.left
+	const y = e.clientY - rect.top
+
+	// strong click ripple
+	for (let i = 0; i < 3; i++) {
+		createRipple(
+			x,
+			y,
+			Math.random() * 100,
+			4 + i * 2
+		)
+	}
+
+	playRippleSound(40)
+}
+
+canvas.addEventListener(
+	"mousemove",
+	handleMouseMove
+)
+
+canvas.addEventListener(
+	"mouseleave",
+	handleMouseLeave
+)
+
+canvas.addEventListener(
+	"click",
+	handleClick
+)
+
 		return () => {
-			window.removeEventListener("resize", resize);
-		};
+	window.removeEventListener(
+		"resize",
+		resize
+	)
+
+	canvas.removeEventListener(
+		"mousemove",
+		handleMouseMove
+	)
+
+	canvas.removeEventListener(
+		"mouseleave",
+		handleMouseLeave
+	)
+
+	canvas.removeEventListener(
+		"click",
+		handleClick
+	)
+}
 	}, []);
 
 	return (
