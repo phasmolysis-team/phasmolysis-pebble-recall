@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Calendar } from "./calendar.tsx";
+import type { MoodLog } from "./types/mood.ts";
 import "./pebbles_log_list.css";
 import calendarIcon from "./assets/calendar.png";
+import { useMoods } from "./features/moods/hooks/use-moods.ts";
 
 type LogEntry = {
 	id: number;
@@ -23,49 +25,54 @@ export function PebbleLogListScreen({
 	const [selectedDate, setSelectedDate] = useState<string>(
 		new Date().toISOString().split("T")[0],
 	);
-
-	// Example logs
-	const [logs] = useState<LogEntry[]>([
-		{
-			id: 1,
-			timestamp: new Date(`${selectedDate}T08:15:00`).getTime(),
-			mood: 10,
-			energy: 20,
-		},
-		{
-			id: 2,
-			timestamp: new Date(`${selectedDate}T11:42:00`).getTime(),
-			mood: 50,
-			energy: 80,
-		},
-		{
-			id: 3,
-			timestamp: new Date(`${selectedDate}T16:05:00`).getTime(),
-			mood: 90,
-			energy: 55,
-		},
-		{
-			id: 4,
-			timestamp: new Date(`${selectedDate}T21:18:00`).getTime(),
-			mood: 70,
-			energy: 95,
-		},
-	]);
+	const moodLogData = useMoods(true);
 
 	// -----------------------------------
 	// Filter logs for selected day
 	// -----------------------------------
-	const dayLogs = useMemo(() => {
-		return logs.filter((log) => {
+	const [dayLogs, setDayLogs] = useState<MoodLog[]>(() => {
+		return moodLogData.moods.filter((log) => {
 			const d = new Date(log.timestamp);
-			const day = d.toISOString().split("T")[0];
-			return day === selectedDate;
+			const day = d.getDay();
+			const year = d.getFullYear();
+			const month = d.getMonth();
+			const s = new Date(selectedDate);
+			const sday = s.getDay();
+			const syear = s.getFullYear();
+			const smonth = s.getMonth();
+
+			const e = day === sday && year === syear && month === smonth;
+			if (e) {
+				console.log(e, d, s);
+			}
+			return e;
 		});
-	}, [logs, selectedDate]);
+	});
 
 	const setSelectedDate_Shared = (date: Date) => {
 		setSelectedDate(formatDate(date.toString()));
 	};
+
+	useEffect(() => {
+		setDayLogs(
+			moodLogData.moods.filter((log) => {
+				const d = new Date(log.timestamp);
+				const day = d.getDay();
+				const year = d.getFullYear();
+				const month = d.getMonth();
+				const s = new Date(selectedDate);
+				const sday = s.getDay();
+				const syear = s.getFullYear();
+				const smonth = s.getMonth();
+
+				const e = day === sday && year === syear && month === smonth;
+				if (e) {
+					console.log(e, d, s);
+				}
+				return e;
+			}),
+		);
+	}, [selectedDate, setSelectedDate, moodLogData.moods.filter]);
 	return (
 		<div className="overlay">
 			{calendarOpen && (
@@ -125,7 +132,7 @@ export function PebbleLogListScreen({
 
 						const topPercent = (minutes / 1440) * 100;
 
-						const color = interpolateGradient(log.mood, [
+						const color = interpolateGradient(Math.abs(log.valence), [
 							{
 								stop: 0,
 								color: { r: 31, g: 154, b: 194 },
@@ -136,7 +143,8 @@ export function PebbleLogListScreen({
 							},
 						]);
 
-						const size = 10 + (log.energy / 100) * 40;
+						const size = 10 + Math.abs(log.arousal) * 40 * 1.67;
+						console.log("daylog", date, log.valence, log.arousal);
 
 						return (
 							<div

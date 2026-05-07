@@ -137,7 +137,7 @@ export function Calendar({
 		setCurrentMoodLogMonth(
 			moodLogData.moods.filter((m) => {
 				const t = new Date(m.timestamp);
-				return t.getMonth() === currentMonth;
+				return t.getMonth() === currentMonth && t.getFullYear() === currentYear
 			}),
 		);
 
