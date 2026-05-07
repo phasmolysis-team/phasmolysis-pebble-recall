@@ -238,6 +238,7 @@ const styles: Record<string, any> = {
 	energyLabel: {
 		fontSize: "20px",
 		fontWeight: "bold",
+    background: "transparent",
 	},
 
 	verticalBar: {
