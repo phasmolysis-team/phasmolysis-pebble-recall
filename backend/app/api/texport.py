@@ -237,6 +237,13 @@ def uuid7_to_datetime(uuid_val) -> datetime.datetime | None:
         return None
 
 
+def round_numeric_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Round all numeric columns to 2 decimal places."""
+    df = df.copy()
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    df[numeric_cols] = df[numeric_cols].round(2)
+    return df
+
 def add_timestamp_column(df: pd.DataFrame) -> pd.DataFrame:
     """Replace the UUIDv7 'id' column with a human-readable 'timestamp' column as ISO string."""
     if 'id' not in df.columns:
@@ -309,6 +316,9 @@ async def generate_csvs(
 
     med_logs_df = med_logs_df.drop(columns=['user_id', 'medication_id'], errors='ignore')
     mood_logs_df = mood_logs_df.drop(columns=['user_id'], errors='ignore')
+
+    med_logs_df = round_numeric_columns(med_logs_df)
+    mood_logs_df = round_numeric_columns(mood_logs_df)
 
     med_logs_df.to_csv(med_logs_tmp.name, index=False)
     mood_logs_df.to_csv(mood_logs_tmp.name, index=False)
@@ -415,6 +425,7 @@ async def export_csv_file(
         mood_logs_with_ts = [MoodLogsWithTimestamp(**log.model_dump()) for log in mood_logs]
         mood_logs_df = pd.DataFrame([log.model_dump() for log in mood_logs_with_ts])
         fp = NamedTemporaryFile(dir=typst_path, delete_on_close=True, suffix=".csv")
+        mood_logs_df = round_numeric_columns(mood_logs_df)
         mood_logs_df.to_csv(fp.name, index=False)
         out = fp.read()
 
@@ -433,6 +444,7 @@ async def export_csv_file(
         med_logs_with_ts = [MedicationLogsWithTimestamp(**log.model_dump()) for log in med_logs]
         med_logs_df = pd.DataFrame([log.model_dump() for log in med_logs_with_ts])
         fp = NamedTemporaryFile(dir=typst_path, delete_on_close=True, suffix=".csv")
+        med_logs_df = round_numeric_columns(med_logs_df)
         med_logs_df.to_csv(fp.name, index=False)
         out = fp.read()
 
@@ -450,6 +462,7 @@ async def export_csv_file(
         med_logs = results.all()
         med_logs_df = pd.DataFrame([log.model_dump() for log in med_logs])
         med_logs_df = add_timestamp_column(med_logs_df)
+        med_logs_df = round_numeric_columns(med_logs_df)
         fp = NamedTemporaryFile(dir=typst_path, delete_on_close=False, suffix=".csv")
         med_logs_df.to_csv(fp.name, index=False)
         out = fp.read()
