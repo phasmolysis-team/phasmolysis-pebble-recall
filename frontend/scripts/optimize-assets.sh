@@ -1,25 +1,51 @@
+#!/bin/bash
+set -exuo pipefail
+
 # Constants
 SRC_DIR="./src/assets/"
-EXCLUDE_FOLDERS=("screenshots")
 ICON_REL_SRC_PATH="rocktuber.png"
 ICON_REL_OUT_PATH="favicon.ico"
+BANNER_REL_SRC_PATH="banner.png"
+BANNER_REL_OUT_PATH="banner-optimized.png"
 WIDTHS=(24 48 96 144 256 320 480 720 1080 1440)
 
 # Derived Variables
 ICON_SRC_PATH="$SRC_DIR/$ICON_REL_SRC_PATH"
 ICON_OUT_PATH="$SRC_DIR/$ICON_REL_OUT_PATH"
+BANNER_SRC_PATH="$SRC_DIR/$BANNER_REL_SRC_PATH"
+BANNER_OUT_PATH="$SRC_DIR/$BANNER_REL_OUT_PATH"
+
+EXCLUDE_FOLDERS=("screenshots")
+EXCLUDE_FILES=(
+    "$ICON_SRC_PATH"
+	"$BANNER_SRC_PATH"
+	"$BANNER_OUT_PATH"
+	"$SRC_DIR/bg.png"
+)
 
 # Function to check if a path should be excluded
 should_exclude() {
     local FILE="$1"
+
+    # exclude folders
     for EX in "${EXCLUDE_FOLDERS[@]}"; do
         if [[ "$FILE" == *"/$EX/"* ]]; then
-            return 0  # yes, exclude
+            return 0
         fi
     done
-    return 1  # no, keep
+
+    # exclude files
+    for EX in "${EXCLUDE_FILES[@]}"; do
+        if [[ "$(basename "$FILE")" == "$EX" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
 }
+
 magick "$ICON_SRC_PATH" -resize "180x180" -strip -quality 80 "$ICON_OUT_PATH"
+magick "$BANNER_SRC_PATH" -resize "1200x800" -strip -quality 80 "$BANNER_OUT_PATH"
 
 # find all images recursively
 find "$SRC_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" \) | while read IMG; do
