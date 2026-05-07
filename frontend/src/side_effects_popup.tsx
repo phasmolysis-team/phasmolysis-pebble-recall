@@ -20,13 +20,13 @@ export function SideEffectsJournalPopup({
 		},
 	});
 
-	const today = new Date().toISOString().split("T")[0];
+	const today = new Date().toISOString();
 
 	const [selectedDate, setSelectedDate] = useState<string>(today);
 
 	const [text, setText] = useState<string>("");
 
-	const [dropdownValue, setDropdownValue] = useState<string>("Happy");
+	const [dropdownValue, setDropdownValue] = useState<string>("Sertraline");
 
 	const [showSavedPopup, setShowSavedPopup] = useState<boolean>(false);
 
@@ -44,7 +44,7 @@ export function SideEffectsJournalPopup({
 		}
 	}
 
-	function handleSave(): void {
+	async function handleSave(): void {
 		setSavedData((prev) => ({
 			...prev,
 			[selectedDate]: {
@@ -55,6 +55,22 @@ export function SideEffectsJournalPopup({
 
 		setShowSavedPopup(true);
 
+		const response = await fetch("/api/medications/logs", {
+    			method: "POST",
+    			credentials: "include",
+    			headers: {
+        			"Content-Type": "application/json",
+    			},
+    			body: JSON.stringify({
+        			custom_date: selectedDate,
+        			side_effects: text,
+        			medication: dropdownValue
+    			})
+
+		})
+
+		console.log("response", response)
+
 		setTimeout(() => {
 			setShowSavedPopup(false);
 		}, 2000);
@@ -63,16 +79,17 @@ export function SideEffectsJournalPopup({
 	return (
 		<>
 			<div style={styles.overlay}>
-				<button className="topRightXButton" onClick={dismissScreenAndReopenHUD}>
+				<button type="button" className="topRightXButton" onClick={dismissScreenAndReopenHUD}>
 					x
 				</button>
 				<div style={styles.popup} className="box">
 					<h1 style={styles.title}>Side Effects Journal</h1>
 
 					{/* Date */}
-					<label style={styles.label}>Select Date</label>
+					<label htmlFor="custom_date" style={styles.label}>Select Date</label>
 
 					<input
+						name="custom_date"
 						type="date"
 						value={selectedDate}
 						max={today}
@@ -85,9 +102,10 @@ export function SideEffectsJournalPopup({
 					/>
 
 					{/* Text */}
-					<label style={styles.label}>List Side Effects Experienced</label>
+					<label htmlFor="side_effects" style={styles.label}>Write Side Effects Experienced</label>
 
 					<textarea
+						name="side_effects"
 						value={text}
 						onInput={(e) => {
 							const target = e.currentTarget as HTMLTextAreaElement;
@@ -99,9 +117,10 @@ export function SideEffectsJournalPopup({
 					/>
 
 					{/* Dropdown */}
-					<label style={styles.label}>Medication</label>
+					<label htmlFor="medication" style={styles.label}>Medication</label>
 
 					<select
+						name="medication"
 						value={dropdownValue}
 						onInput={(e) => {
 							const target = e.currentTarget as HTMLSelectElement;
@@ -110,11 +129,35 @@ export function SideEffectsJournalPopup({
 						}}
 						style={styles.input}
 					>
-						<option value="Happy">Happy</option>
-						<option value="Neutral">Neutral</option>
-						<option value="Sad">Sad</option>
-						<option value="Excited">Excited</option>
-						<option value="Tired">Tired</option>
+						<option value="Sertraline">Sertraline</option>
+						<option value="Fluoxetine">Fluoxetine</option>
+						<option value="Escitalopram">Escitalopram</option>
+						<option value="Citalopram">Citalopram</option>
+						<option value="Paroxetine">Paroxetine</option>
+						<option value="Venlafaxine">Venlafaxine</option>
+						<option value="Duloxetine">Duloxetine</option>
+						<option value="Bupropion">Bupropion</option>
+						<option value="Mirtazapine">Mirtazapine</option>
+
+						<option value="Alprazolam">Alprazolam</option>
+						<option value="Lorazepam">Lorazepam</option>
+						<option value="Clonazepam">Clonazepam</option>
+						<option value="Buspirone">Buspirone</option>
+
+						<option value="Lithium">Lithium</option>
+						<option value="Lamotrigine">Lamotrigine</option>
+						<option value="Valproate">Valproate</option>
+
+						<option value="Risperidone">Risperidone</option>
+						<option value="Olanzapine">Olanzapine</option>
+						<option value="Quetiapine">Quetiapine</option>
+						<option value="Aripiprazole">Aripiprazole</option>
+
+						<option value="Methylphenidate">Methylphenidate</option>
+						<option value="Amphetamine mixed salts">
+							Amphetamine mixed salts
+						</option>
+						<option value="Atomoxetine">Atomoxetine</option>
 					</select>
 
 					{/* Save */}
