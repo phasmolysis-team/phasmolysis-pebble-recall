@@ -139,6 +139,47 @@ function HamburgerMenu({
 	openLogList = () => {},
 	openSideEffectJournal = () => {},
 }) {
+	const handleExportPdf = async () => {
+		const response = await fetch("/api/export/pdf", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			body: "",
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to export PDF");
+		}
+
+		const blob = await response.blob();
+
+		// get filename from Content-Disposition
+		const disposition = response.headers.get("Content-Disposition");
+
+		let filename = "download.pdf";
+
+		if (disposition) {
+			const match = disposition.match(/filename="(.+)"/);
+
+			if (match?.[1]) {
+				filename = match[1];
+			}
+		}
+
+		const url = window.URL.createObjectURL(blob);
+
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = filename;
+
+		document.body.appendChild(a);
+		a.click();
+
+		a.remove();
+		window.URL.revokeObjectURL(url);
+	};
 	const [open, setOpen] = useState(false);
 	return (
 		<div style={styles.topRightContainer}>
@@ -157,7 +198,11 @@ function HamburgerMenu({
 					<button onClick={openLogList} style={styles.iconButton}>
 						<img src={rockLogIcon} style={{ width: "50px", height: "50px" }} />
 					</button>
-					<button style={styles.iconButton}>
+					<button
+						type="button"
+						style={styles.iconButton}
+						onClick={handleExportPdf}
+					>
 						<img
 							src={exportIcon}
 							style={{ marginTop: "10px", width: "50px", height: "50px" }}
