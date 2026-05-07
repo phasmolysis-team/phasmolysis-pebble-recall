@@ -126,8 +126,8 @@ async def generate_mood_logs(
     total = 0
     for user_id in user_ids:
         for _ in range(logs_per_user):
-            valence = round(random.uniform(-1.0, 1.0), 2)
-            arousal = round(random.uniform(-1.0, 1.0), 2)
+            valence = round(random.uniform(0.0, 100.0), 2)
+            arousal = round(random.uniform(0.0, 100.0), 2)
             log_id = make_uuid7_with_ts(random_log_ts_ms())
 
             batch.append((log_id, user_id, valence, arousal))
